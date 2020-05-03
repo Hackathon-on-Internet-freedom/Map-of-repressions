@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+
+import GenericChart from '../GenericChart';
+
 import * as styles from './TileMap.scss';
 
-const TileMap = ({ mapHeight, mapWidth, data }) => {
-  const addTileMapContent = tileContent => {
-    const svg = d3.select('#mapContent').append('svg');
-
-    svg.attr('width', mapWidth).attr('height', mapHeight);
-
-    const maxColumns = d3.max(tileContent, d => parseInt(d.col, 10));
-    const maxRows = d3.max(tileContent, d => parseInt(d.row, 10));
+const TileMap = ({ data, width, height, id }) => {
+  const buildTileMap = (data, mapHeight, mapWidth, svg) => {
+    const maxColumns = d3.max(data, d => parseInt(d.col, 10));
+    const maxRows = d3.max(data, d => parseInt(d.row, 10));
 
     const tileWidth = mapWidth / (maxColumns + 1);
     const tileHeight = mapHeight / (maxRows + 1);
@@ -20,7 +19,7 @@ const TileMap = ({ mapHeight, mapWidth, data }) => {
     const tile = svg
       .select('#tileArea')
       .selectAll('g')
-      .data(tileContent)
+      .data(data)
       .enter()
       .append('g');
 
@@ -44,21 +43,22 @@ const TileMap = ({ mapHeight, mapWidth, data }) => {
     return svg;
   };
 
-  useEffect(() => {
-    addTileMapContent(data);
-  }, []);
-
   return (
-    <div className={styles['tile-map']}>
-      <div className={styles['tile-map__content']} id="mapContent" />
-    </div>
+    <GenericChart
+      containerId={id}
+      chartWidth={width}
+      chartHeight={height}
+      data={data}
+      buildChart={buildTileMap.bind(null, data, height, width)}
+    />
   );
 };
 
 TileMap.propTypes = {
-  mapHeight: PropTypes.number.isRequired,
-  mapWidth: PropTypes.number.isRequired,
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
   data: PropTypes.instanceOf(Array).isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default TileMap;

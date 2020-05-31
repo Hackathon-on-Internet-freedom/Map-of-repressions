@@ -32,8 +32,8 @@
 ## Project Setup
 
 <pre>
-  <code>yarn install</code>
-  <code>yarn run start:dev</code>
+  <code>npm install</code>
+  <code>npm run start:dev</code>
 </pre>
 
 The site will be available on `localhost:3000`
@@ -43,13 +43,13 @@ The site will be available on `localhost:3000`
 To check your code style just execute 
 
 <pre>
-  <code>yarn run lint</code>
+  <code>npm run lint</code>
 </pre>
 
 Most issues can be fixed by calling came command with `--fix` key 
 
 <pre>
-  <code>yarn run lint --fix</code>
+  <code>npm run lint --fix</code>
 </pre>
 
 

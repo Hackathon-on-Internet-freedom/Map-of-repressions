@@ -5,6 +5,7 @@ import style from './app.css';
 import mapData from './assets/data/data';
 import socialMediaData from './assets/data/socialMediaData';
 import HorizontalBarChart from './components/HorizontalBarChart';
+import MonthGraph from './components/MontheGraph/MonthGraph';
 
 const App = () => (
   <div className={style.app}>
@@ -15,6 +16,7 @@ const App = () => (
     {/*    width={1000} */}
     {/*    id={'PieChart'} */}
     {/* /> */}
+    <MonthGraph/>
     <HorizontalBarChart
       id="BarChart"
       height={500}

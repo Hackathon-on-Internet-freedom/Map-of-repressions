@@ -5,7 +5,7 @@ import style from './app.css';
 import mapData from './assets/data/data';
 
 import TileMap from './components/TileMap';
-import MonthGraph from './components/MontheGraph/MonthGraph';
+import MonthGraph from './components/MonthGraph';
 import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 
@@ -18,9 +18,11 @@ const App = () => (
     {/*    width={1000} */}
     {/*    id={'PieChart'} */}
     {/* /> */}
-    <MonthGraph/>
-    <DiagramCasesPer100Thousand />
-    <CasesBySocial />
+    <div className={style.charts}>
+      <MonthGraph />
+      <DiagramCasesPer100Thousand />
+      <CasesBySocial />
+    </div>
   </div>
 );
 

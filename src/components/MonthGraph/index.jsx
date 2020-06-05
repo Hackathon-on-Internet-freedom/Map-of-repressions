@@ -1,13 +1,19 @@
 import React from 'react';
 import * as d3 from 'd3';
 
+import style from './MonthGraph.scss';
 import { getValuesFx } from '../../utils/effector';
+
+const TITLES = {
+  month: 'Показать по годам',
+  year: 'Показать по месяцам',
+};
 
 class MonthGraph extends React.Component {
   constructor() {
     super();
     this.state = {}
-    this.state.docs = [[]];
+    this.state.docs = [];
     this.state.type = 'month'
     this.state.countCharts = 0;
   }
@@ -18,25 +24,24 @@ class MonthGraph extends React.Component {
       dateTimeRenderOption: 'SERIAL_NUMBER',
       majorDimension: 'COLUMNS'
     }).then(data => {
-      this.setState({ docs: data });
+      this.setState({ docs: data[0] }, () => this.createChart());
     });
   }
 
   arrayBarFormat = () => {
     let data = {}
     let returnedData = []
-    for (let i = 1; i < this.state.docs['0'].length-1; i++) {
-      if (data[this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-      this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]]) {
-        data[this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-        this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]] += 1;
+    for (let i = 1; i < this.state.docs.length-1; i++) {
+      if (data[this.state.docs[i][6]+ this.state.docs[i][7]+
+      this.state.docs[i][8]+ this.state.docs[i][9]]) {
+        data[this.state.docs[i][6]+ this.state.docs[i][7]+
+        this.state.docs[i][8]+ this.state.docs[i][9]] += 1;
       } else {
-        data[this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-        this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]] = 1;
+        data[this.state.docs[i][6]+ this.state.docs[i][7]+
+        this.state.docs[i][8]+ this.state.docs[i][9]] = 1;
       }
     }
     Object.keys(data).forEach(function(key) {
-      console.log(key, data[key]);
       returnedData.push({name: key[0] + key[1] + key[2] + key[3], value: data[key]})
     });
     return returnedData
@@ -45,17 +50,17 @@ class MonthGraph extends React.Component {
   arrayLineFormat = () => {
     let data = {}
     let returnedData = []
-    for (let i = 1; i < this.state.docs['0'].length-1; i++) {
-      if (data[this.state.docs['0'][i][3] + this.state.docs['0'][i][4]+
-      this.state.docs['0'][i][5]+ this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-      this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]]) {
-        data[this.state.docs['0'][i][3] + this.state.docs['0'][i][4]+
-        this.state.docs['0'][i][5]+ this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-        this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]] += 1;
+    for (let i = 1; i < this.state.docs.length-1; i++) {
+      if (data[this.state.docs[i][3] + this.state.docs[i][4]+
+      this.state.docs[i][5]+ this.state.docs[i][6]+ this.state.docs[i][7]+
+      this.state.docs[i][8]+ this.state.docs[i][9]]) {
+        data[this.state.docs[i][3] + this.state.docs[i][4]+
+        this.state.docs[i][5]+ this.state.docs[i][6]+ this.state.docs[i][7]+
+        this.state.docs[i][8]+ this.state.docs[i][9]] += 1;
       } else {
-        data[this.state.docs['0'][i][3] + this.state.docs['0'][i][4]+
-        this.state.docs['0'][i][5]+ this.state.docs['0'][i][6]+ this.state.docs['0'][i][7]+
-        this.state.docs['0'][i][8]+ this.state.docs['0'][i][9]] = 1;
+        data[this.state.docs[i][3] + this.state.docs[i][4]+
+        this.state.docs[i][5]+ this.state.docs[i][6]+ this.state.docs[i][7]+
+        this.state.docs[i][8]+ this.state.docs[i][9]] = 1;
       }
     }
     Object.keys(data).forEach(function(key) {
@@ -189,76 +194,29 @@ class MonthGraph extends React.Component {
   }
 
   createChart() {
-    if (this.state.docs[0].length < 2) {
-      alert('Дождитесь загрузки данных и попробуйте снова')
+    if (this.state.countCharts !== 0) {
+      const element = document.getElementById(this.state.countCharts-1);
+      element.parentNode.removeChild(element);
+    }
+    this.setState({countCharts: this.state.countCharts+1})
+    if (this.state.type === 'year') {
+      this.setState({type: 'month'})
+      this.renderLineChart()
     } else {
-      if (this.state.countCharts !== 0) {
-        const element = document.getElementById(this.state.countCharts-1);
-        element.parentNode.removeChild(element);
-      }
-      this.setState({countCharts: this.state.countCharts+1})
-      if (this.state.type === 'year') {
-        this.setState({type: 'month'})
-        this.renderBarChart()
-      } else {
-        this.setState({type: 'year'})
-        this.renderLineChart()
-      }
+      this.setState({type: 'year'})
+      this.renderBarChart()
     }
   }
 
   render() {
-    /*
-    const client = new GShitsClient(
-      ' https://sheets.googleapis.com/v4/spreadsheets/1HRQmWpdrt0kmF' +
-        'vCv4Auk66QxSGJahh0_06wV5rTYRb8/values/Sheet1!A1:D5?' +
-        'valueRenderOption=FORMULA&dateTimeRenderOption=SERIAL_NUMBER',
-      googleData => {
-        this.data = googleData;
-        console.log('dataHandler', this.data.feed.entry);
-      },
-      error => {
-        console.log('errorHandler', error);
-      },
-    );
-     */
-    /*
-    client.getData().then(() => {
-      for (let i = 0; this.data.feed.entry.length - 1; i++) {
-        if (this.data.feed.entry[i]) {
-          // console.log(this.counterArray);
-          if (this.data.feed.entry[i].gs$cell.col === 1) {
-            // this.counterArray.add({
-            //  name: (
-            //   this.data.feed.entry[i].content.$t[3] +
-            //    this.data.feed.entry[i].content.$t[4]
-            // ).parseInt(),
-            // value: 0,
-            // });
-            if (
-              (
-                this.data.feed.entry[i].content.$t[3] +
-                this.data.feed.entry[i].content.$t[4]
-              ).parseInt() >=
-              month + 1
-            ) {
-              if (month === 12) {
-                month = 0;
-              } else {
-                month += 1;
-              }
-            } else {
-              // this.counterArray[i].value += 1;
-            }
-          }
-        }
-      }
-      // this.data = this.counterArray;
-     */
+    if (this.state.docs.length < 2) {
+      return 'Загрузка...';
+    }
+
     return (
-      <div>
+      <div className={style.root}>
         <button onClick={this.createChart.bind(this)}>
-          {this.state.type}
+          { TITLES[this.state.type] }
         </button>
         <div id="mapContentChart" />
       </div>

@@ -20,7 +20,16 @@
 }
 
 .app {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
   font-family: "Roboto Slab", sans-serif;
   font-size: 16px;
 }
 
+.charts {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 50px 20px 0;
+}

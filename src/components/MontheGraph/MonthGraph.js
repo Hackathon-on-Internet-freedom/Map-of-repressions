@@ -1,32 +1,7 @@
 import React from 'react';
 import * as d3 from 'd3';
 
-function loadDocs(callback) {
-  window.gapi.client.load('sheets', 'v4', () => {
-    window.gapi.client.sheets.spreadsheets.values
-      .get({
-        spreadsheetId: '1HRQmWpdrt0kmFvCv4Auk66QxSGJahh0_06wV5rTYRb8',
-        range: 'LENTA!A1:A1038',
-        dateTimeRenderOption: 'SERIAL_NUMBER',
-        majorDimension: 'COLUMNS'
-      })
-      .then(
-        response => {
-          const data = response.result.values;
-          const cars =
-            data.map(car => ({
-              year: car[0],
-              make: car[1],
-              model: car[2],
-            })) || [];
-          callback([data, false]);
-        },
-        response => {
-          callback([false, response.result.error]);
-        },
-      );
-  });
-}
+import { getValuesFx } from '../../utils/effector';
 
 class MonthGraph extends React.Component {
   constructor() {
@@ -38,33 +13,13 @@ class MonthGraph extends React.Component {
   }
 
   componentDidMount() {
-    // 1. Load the JavaScript client library.
-    window.gapi.load('client', this.initClient);
-  }
-
-  onLoad = (data, error) => {
-    const cars = data[0]
-    if (data) {
-      this.setState({ docs: cars } );
-    } else {
-      this.setState({ error });
-    }
-  }
-
-  initClient = () => {
-    // 2. Initialize the JavaScript client library.
-    window.gapi.client
-      .init({
-        apiKey: 'AIzaSyCKivLrYYPmTIMuJr_QB_Y6-LXmVz-YoTs',
-        // Your API key will be automatically added to the Discovery Document URLs.
-        discoveryDocs: [
-          'https://sheets.googleapis.com/$discovery/rest?version=v4',
-        ],
-      })
-      .then(() => {
-        // 3. Initialize and make the API request.
-        loadDocs(this.onLoad);
-      });
+    getValuesFx({
+      range: 'LENTA!A1:A1038',
+      dateTimeRenderOption: 'SERIAL_NUMBER',
+      majorDimension: 'COLUMNS'
+    }).then(data => {
+      this.setState({ docs: data });
+    });
   }
 
   arrayBarFormat = () => {

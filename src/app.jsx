@@ -6,6 +6,7 @@ import mapData from './assets/data/data';
 import socialMediaData from './assets/data/socialMediaData';
 import HorizontalBarChart from './components/HorizontalBarChart';
 import MonthGraph from './components/MontheGraph/MonthGraph';
+import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 
 const App = () => (
   <div className={style.app}>
@@ -25,6 +26,7 @@ const App = () => (
       xAxisLabel="Число инцидентов"
       yAxisLabel="Соцсеть"
     />
+    <DiagramCasesPer100Thousand />
   </div>
 );
 

@@ -14,8 +14,8 @@ const handleColors = data => {
   return {'hot': data[0][0], 'cold': data[0][1]};
 }
 
-const createColors = (values, colors) => {
-  let colorMap = {}
+const cookMetadata = (values, colors) => {
+  let metadata = {}
   const valuesSet = new Set(values);
   const gradient = gradstop({
     stops: valuesSet.size,
@@ -24,9 +24,10 @@ const createColors = (values, colors) => {
   });
   const orderedValuesList = Array.from(valuesSet).sort().reverse();
   for (let i = 0; i < gradient.length; i++) {
-    colorMap[orderedValuesList[i]] = gradient[i];
+    metadata[orderedValuesList[i]] = {color: gradient[i], rank: i}
+
   }
-  return colorMap;
+  return metadata;
 }
 
 const handleRegions = (data, colors) => {
@@ -41,13 +42,34 @@ const handleRegions = (data, colors) => {
     values.push(region.value);
     mapData.push(region);
   }
-  let colorsMap = createColors(values, colors);
-  mapData.forEach(r => r.color = colorsMap[r.value]);
+  let metadata = cookMetadata(values, colors);
+  mapData.forEach(r => {
+    r.color = metadata[r.value].color;
+    r.rank = metadata[r.value].rank;
+  });
+  if (mapData.view === undefined) {
+    mapData.view = {type: VIEW.map}
+  }
   return mapData;
 }
 
 const handleData = data => {
   return handleRegions(data[0].values, handleColors(data[1].values));
+}
+
+const ORDER = {
+  asc: 'ASC',
+  desc: 'DESC'
+}
+
+const VIEW = {
+  map: 'MAP',
+  tileChart: 'Tiles'
+}
+
+const toggleOrder = order => {
+  if (order === ORDER.asc) {return ORDER.desc}
+  return ORDER.asc;
 }
 
 const TileMap = () => {
@@ -76,11 +98,13 @@ const TileMap = () => {
     });
   }, []);
 
+  const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
+
   if (!data) {
     return 'Загрузка...';
   }
 
-  const buildTileMap = (data, mapHeight, mapWidth, svg) => {
+  const buildTileMap = (data, mapHeight, mapWidth, view, svg) => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
 
@@ -99,43 +123,56 @@ const TileMap = () => {
       .on('click', d => setSelectedTile(d.id_reg))
       .classed(styles['tile-map__tile-wrapper'], true);
 
-    tile
-      .append('rect')
-      .style('fill', d => d.color)
-      .attr('width', tileWidth)
-      .attr('height', tileHeight)
-      .attr('x', d => d.col * tileWidth)
-      .attr('y', d => d.row * tileHeight)
-      .classed(styles['tile-map__tile'], true);
+    if (view.type === VIEW.map) {
+      tile
+        .append('rect')
+        .style('fill', d => d.color)
+        .attr('width', tileWidth)
+        .attr('height', tileHeight)
+        .attr('x', d => d.col * tileWidth)
+        .attr('y', d => d.row * tileHeight)
+        .classed(styles['tile-map__tile'], true);
 
-    tile
-      .append('text')
-      .attr('x', d => d.col * tileWidth + tileWidth / 5)
-      .attr('y', d => d.row * tileHeight + tileHeight / 3)
-      .attr('dy', '.35em')
-      .text(d => d.region_rus)
-      .classed(styles['tile-map__caption'], true);
+      tile
+        .append('text')
+        .attr('x', d => d.col * tileWidth + tileWidth / 5)
+        .attr('y', d => d.row * tileHeight + tileHeight / 3)
+        .attr('dy', '.35em')
+        .text(d => d.region_rus)
+        .classed(styles['tile-map__caption'], true);
 
-    tile
-      .append('text')
-      .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
-      .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
-      .attr('dy', '.35em')
-      .text(d => d.value)
-      .classed(styles['tile-map__caption'], true);
+      tile
+        .append('text')
+        .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
+        .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
+        .attr('dy', '.35em')
+        .text(d => d.value)
+        .classed(styles['tile-map__caption'], true);
+    } else {
+      console.log("I want see it work!!!!");
+    }
 
     return svg;
   };
 
+  const updateView = view => {
+    setView(view);
+    buildTileMap.bind(null, data, 500, 1000, view);
+  }
+
   return (
-    <GenericChart
-      containerId="TileChart"
-      chartWidth={1000}
-      chartHeight={500}
-      data={data}
-      buildChart={buildTileMap.bind(null, data, 500, 1000)}
-    />
-  );
+    <div>
+      <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>Sort by {view.order}</button>
+      {view.type === VIEW.tileChart && <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>Map View</button>}
+      <GenericChart
+        containerId="TileChart"
+        chartWidth={1000}
+        chartHeight={500}
+        data={data}
+        buildChart={buildTileMap.bind(null, data, 500, 1000, view)}
+      />
+    </div>
+  )
 };
 
 export default TileMap;

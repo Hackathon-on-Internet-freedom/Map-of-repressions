@@ -6,6 +6,7 @@ import styles from './TileMap.scss';
 import { getMapValues, selectedTile, setSelectedTile } from '../../utils/effector';
 
 import GenericChart from '../GenericChart';
+import  { withRouter } from 'react-router-dom';
 
 const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
 const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
@@ -83,7 +84,6 @@ const TileMap = () => {
   const buildTileMap = (data, mapHeight, mapWidth, svg) => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
-
     const tileWidth = mapWidth / (maxColumns + 1);
     const tileHeight = mapHeight / (maxRows + 1);
 
@@ -95,9 +95,31 @@ const TileMap = () => {
       .data(data)
       .enter()
       .append('g')
-      .attr('data-id', d => d.id_reg)
-      .on('click', d => setSelectedTile(d.id_reg))
-      .classed(styles['tile-map__tile-wrapper'], true);
+      .on("mouseover", function(d) {
+        let elements = document.getElementById('block');
+        elements.style.opacity = 1;
+        elements.style.left = d.col * tileWidth + 60 + "px";
+        elements.style.top  = d.row * tileHeight - 10 + "px";
+        let elementRegion = document.getElementById('textRegion');
+        elementRegion.textContent = d.region;
+        let elementCount = document.getElementById('textCount');
+        elementCount.textContent = 'Количество случаев ' + dataDocs[0][dataDocs[1].indexOf(d.id_reg)];
+        let elementPopulation = document.getElementById('textPopulation');
+        elementPopulation.textContent = 'Население ' + dataDocs[2][dataDocs[1].indexOf(d.id_reg)];
+      })
+      .on("mouseout", function(d) {
+        let elements = document.getElementById('block');
+        elements.style.opacity = 0;
+        elements.style.left = window.innerWidth /2 + "px";
+        elements.style.top  = window.innerHeight /2 + "px";
+      })
+      .on("click", (d) => {
+        const location = {
+          pathname: dataDocs[1].indexOf(d.id_reg),
+          state: { fromDashboard: true }
+        }
+        this.props.history.push(location)
+      })
 
     tile
       .append('rect')
@@ -110,32 +132,40 @@ const TileMap = () => {
 
     tile
       .append('text')
-      .attr('x', d => d.col * tileWidth + tileWidth / 5)
-      .attr('y', d => d.row * tileHeight + tileHeight / 3)
-      .attr('dy', '.35em')
-      .text(d => d.region_rus)
-      .classed(styles['tile-map__caption'], true);
-
-    tile
-      .append('text')
       .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
       .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
       .attr('dy', '.35em')
       .text(d => d.value)
       .classed(styles['tile-map__caption'], true);
 
+
+    tile
+      .append('text')
+      .attr('x', d => d.col * tileWidth + tileWidth / 5)
+      .attr('y', d => d.row * tileHeight + tileHeight / 3)
+      .attr('dy', '.35em')
+      .text(d => d.region_rus)
+      .classed(styles['tile-map__caption'], true);
+
     return svg;
-  };
+  }
 
   return (
-    <GenericChart
-      containerId="TileChart"
-      chartWidth={1000}
-      chartHeight={500}
-      data={data}
-      buildChart={buildTileMap.bind(null, data, 500, 1000)}
-    />
+    <div>
+      <GenericChart
+        containerId='TileMap'
+        chartWidth={1000}
+        chartHeight={500}
+        data={data}
+        buildChart={buildTileMap.bind(null, data, 500, 1000)}
+      />
+      <div id='block' style={{left: 0, top: 0, opacity:0, position:'absolute', backgroundColor: 'rgb(108, 205, 216,0.7)'}}>
+        <h3 id='textRegion'>1</h3>
+        <h3 id='textCount'>1</h3>
+        <h3 id='textPopulation'>1</h3>
+      </div>
+    </div>
   );
-};
+}
 
-export default TileMap;
+export default withRouter(TileMap);

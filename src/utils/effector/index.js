@@ -153,16 +153,6 @@ export const setRawData = createEvent();
 export const rawData = createStore([])
   .on(setRawData, (state, data) => data);
 
-export const socialList = rawData.map(rows => {
-  const list = new Set(['Все площадки']);
-  rows.forEach(row => {
-    row[6].split(',').forEach(social => {
-      list.add(social.trim());
-    });
-  });
-  return Array.from(list);
-});
-
 export const casesByDates = rawData.map(rows => {
   return rows.reduce((acc, row) => {
     const date = row[0].replace(/^(\d\d)\.(\d\d)\.(\d{4})$/, '$3-$2-$1');
@@ -173,7 +163,7 @@ export const casesByDates = rawData.map(rows => {
 
 export const casesByMonths = casesByDates.map(map => {
   return Object.entries(map).reduce((acc, row) => {
-    const month = row[0].slice(0, 6);
+    const month = row[0].slice(0, 7);
     acc[month] = row[1] + (acc[month] || 0);
     return acc;
   }, {});
@@ -181,7 +171,7 @@ export const casesByMonths = casesByDates.map(map => {
 
 export const casesByYears = casesByDates.map(map => {
   return Object.entries(map).reduce((acc, row) => {
-    const year = row[0].slice(0, 3);
+    const year = row[0].slice(0, 4);
     acc[year] = row[1] + (acc[year] || 0);
     return acc;
   }, {});

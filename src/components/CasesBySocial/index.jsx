@@ -1,19 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
+import { useStore } from 'effector-react';
 
 import style from './CasesBySocial.scss';
-import { getValuesFx } from '../../utils/effector';
+import { dataBySocials } from '../../utils/effector';
 
 import HorizontalBarChart from '../HorizontalBarChart';
 
 const CasesBySocial = () => {
-  const [data, setData] = useState(false);
-  useEffect(() => {
-    getValuesFx({
-      range: 'Stat!N2:O20',
-    }).then(data => {
-      setData(data.map(([name, value]) => ({ name, value: Number(value) })))
-    });
-  }, []);
+  const socialDataMap = useStore(dataBySocials);
+
+  const data = useMemo(
+    () => {
+      const values = Object.keys(socialDataMap).map(name => ({
+        name,
+        value: socialDataMap[name].length,
+      }));
+
+      values.sort((a, b) => b.value - a.value);
+
+      return [
+        ...values.slice(0, 10),
+        values.slice(10).reduce((acc, { value }) => {
+          acc.value += value;
+          return acc;
+        }, { name: 'Другое', value: 0 }),
+      ];
+    },
+    [socialDataMap],
+  );
+
 
   if (!data) {
     return 'Загрузка...';

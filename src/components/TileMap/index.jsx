@@ -13,7 +13,6 @@ import {
   selectedTiles,
   setSelectedSocial,
   setSelectedTiles,
-  socialList,
 } from '../../utils/effector';
 import history from '../../utils/history';
 
@@ -78,8 +77,12 @@ const TileMap = () => {
   const settings = useStore(mapSettings);
   const colors = useStore(colorSchema);
 
-  const socials = useStore(socialList);
   const currentSocial = useStore(selectedSocial);
+
+  const socials = useMemo(
+    () => (['Все площадки', ...Object.keys(socialDataMap)]),
+    [socialDataMap],
+  );
 
   const data = useMemo(
     () => {
@@ -139,7 +142,7 @@ const TileMap = () => {
           let elementRegion = document.getElementById('textRegion');
           elementRegion.textContent = d.region;
           let elementCount = document.getElementById('textCount');
-          elementCount.textContent = 'Количество случаев: ' + dataDocs[0][dataDocs[1].indexOf(d[MAP_ID_KEY])];
+          elementCount.textContent = 'Количество случаев: ' + (d.value || 0);
           let elementPopulation = document.getElementById('textPopulation');
           elementPopulation.textContent = 'Население: ' + dataDocs[2][dataDocs[1].indexOf(d[MAP_ID_KEY])];
         })

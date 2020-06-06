@@ -1,3 +1,8 @@
+.root {
+  display: flex;
+  justify-content: space-around;
+}
+
 .tile-map {
   width: 100%;
   background: beige;
@@ -23,4 +28,10 @@
 .tile-map__caption {
   font: 12px sans-serif;
   fill: #FFFFFF;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  padding-left: 40px;
 }

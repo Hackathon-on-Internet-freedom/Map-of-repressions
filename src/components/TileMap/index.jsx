@@ -1,11 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import gradstop from 'gradstop';
 
 import styles from './TileMap.scss';
-import { getMapValues, selectedTile, setSelectedTile } from '../../utils/effector';
+import {
+  colorSchema,
+  dataBySocials,
+  getMapValues,
+  mapSettings,
+  rawData,
+  selectedSocial,
+  selectedTiles,
+  setSelectedSocial,
+  setSelectedTiles,
+  socialList,
+} from '../../utils/effector';
 
 import GenericChart from '../GenericChart';
+import { useStore } from 'effector-react';
+import { MAP_ID_KEY } from '../../constants';
+import { combine } from 'effector';
 
 const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
 const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
@@ -22,7 +36,7 @@ const createColors = (values, colors) => {
     inputFormat: 'hex',
     colorArray: [colors.hot, colors.cold]
   });
-  const orderedValuesList = Array.from(valuesSet).sort().reverse();
+  const orderedValuesList = Array.from(valuesSet).sort((a, b) => b - a);
   for (let i = 0; i < gradient.length; i++) {
     colorMap[orderedValuesList[i]] = gradient[i];
   }
@@ -50,35 +64,84 @@ const handleData = data => {
   return handleRegions(data[0].values, handleColors(data[1].values));
 }
 
-const TileMap = () => {
-  const [data, setData] = useState(false);
-  useEffect(() => {
-    getMapValues({
-      apiKey: API_KEY,
-      ranges: ['A1:J86', 'M2:N2'],
-      majorDimension: 'ROWS',
-      spreadsheetId: MAP_SHEET_ID,
-    }).then(data => {
-      setData(handleData(data))
-    });
-  }, []);
+function getMapData(data, settings, colors) {
+  const casesByRegion = data.reduce((acc, row) => {
+    acc[row[2]] = 1 + (acc[row[2]] || 0);
+    return acc;
+  }, {});
 
+  console.log('cases', casesByRegion);
+
+  const colorMap = createColors(
+    [0, ...Object.values(casesByRegion)],
+    colors,
+  );
+
+  return Object.entries(settings).map(([id, obj]) => ({
+    ...obj,
+    value: casesByRegion[id],
+    color: colorMap[casesByRegion[id] || 0],
+  }));
+}
+
+const TileMap = () => {
   useEffect(() => {
-    selectedTile.watch(state => {
+    selectedTiles.watch(state => {
       document.querySelectorAll('[data-id]').forEach(el => {
         el.classList.remove(styles['tile-map__selected']);
       });
 
-      if (state) {
-        document.querySelector(`[data-id=${state}]`)
-          .classList.add(styles['tile-map__selected']);
+      if (state.length) {
+        const elements = document.getElementsByClassName(styles['tile-map__tile-wrapper']);
+
+        for (const el of elements) {
+          if (state.includes(el.attributes['data-id'].value)) {
+            el.classList.add(styles['tile-map__selected']);
+          }
+        }
       }
     });
   }, []);
 
-  if (!data) {
+  const allData = useStore(rawData);
+  const socialDataMap = useStore(dataBySocials);
+  const settings = useStore(mapSettings);
+  const colors = useStore(colorSchema);
+
+  const socials = useStore(socialList);
+  const currentSocial = useStore(selectedSocial);
+
+  const data = useMemo(
+    () => {
+      if (currentSocial === 'Все площадки') {
+        return allData;
+      }
+
+      return socialDataMap[currentSocial];
+    },
+    [allData, socialDataMap, currentSocial],
+  );
+
+  const mapData = useMemo(
+    () => {
+      if (
+        !data || !data.length ||
+        !settings || !Object.keys(settings).length ||
+        !colors || !Object.keys(colors).length
+      ) {
+        return [];
+      }
+
+      return getMapData(data, settings, colors);
+    },
+    [data, settings, colors],
+  );
+
+  if (!mapData.length) {
     return 'Загрузка...';
   }
+
+  console.log('mapData', mapData);
 
   const buildTileMap = (data, mapHeight, mapWidth, svg) => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
@@ -95,8 +158,8 @@ const TileMap = () => {
       .data(data)
       .enter()
       .append('g')
-      .attr('data-id', d => d.id_reg)
-      .on('click', d => setSelectedTile(d.id_reg))
+      .attr('data-id', d => d[MAP_ID_KEY])
+      .on('click', d => setSelectedTiles([d[MAP_ID_KEY]]))
       .classed(styles['tile-map__tile-wrapper'], true);
 
     tile
@@ -127,14 +190,37 @@ const TileMap = () => {
     return svg;
   };
 
+  const onChangeSocial = (e) => {
+    setSelectedSocial(e.target.value);
+  };
+
   return (
-    <GenericChart
-      containerId="TileChart"
-      chartWidth={1000}
-      chartHeight={500}
-      data={data}
-      buildChart={buildTileMap.bind(null, data, 500, 1000)}
-    />
+    <div className={styles.root}>
+      <GenericChart
+        containerId="TileChart"
+        chartWidth={1000}
+        chartHeight={500}
+        data={mapData}
+        buildChart={buildTileMap.bind(null, mapData, 500, 1000)}
+      />
+
+      <div className={styles.controls}>
+        <select
+          name="social"
+          onChange={onChangeSocial}
+          value={currentSocial}
+        >
+          {socials.map(social => (
+            <option
+              key={social}
+              value={social}
+            >
+              {social}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
   );
 };
 

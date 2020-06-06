@@ -1,25 +1,34 @@
 import React, { useEffect, useState } from 'react';
 
 import style from './CasesBySocial.scss';
-import { getValuesFx } from '../../utils/effector';
 
 import HorizontalBarChart from '../HorizontalBarChart';
 
-const CasesBySocial = () => {
+function sortData(rawData) {
+  let data = {}
+  let returnedData = []
+  for (let i = 1; i < rawData.length-1; i++) {
+    if (data[rawData[6]]) {
+      data[rawData[6]] += 1;
+    } else {
+      data[rawData[6]] = 1;
+    }
+  }
+  Object.keys(data).forEach(function(key) {
+    returnedData.push({name: key, value: data[key]})
+  });
+  console.log('GGGGGG', returnedData)
+  return returnedData
+}
+
+const CasesBySocial = (rawData) => {
+  console.log(rawData)
   const [data, setData] = useState(false);
-  useEffect(() => {
-    getValuesFx({
-      range: 'Stat!N2:O20',
-    }).then(data => {
-      setData(data.map(([name, value]) => ({ name, value: Number(value) })))
-    });
-  }, []);
+  setData(sortData(rawData))
 
   if (!data) {
     return 'Загрузка...';
   }
-
-  console.log('AAAAAAAAAAA', data)
 
   return (
     <div className={style.root}>

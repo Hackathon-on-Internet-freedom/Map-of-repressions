@@ -64,10 +64,9 @@ class Newsfeed extends React.Component {
         return (
             <div className={style.newsfeed}>
                 {news.map(item => {
-                    console.log(item);
                     return (
                         <Fragment>
-                            <NewsfeedItem key={item} data={item} />
+                            <NewsfeedItem data={item} />
                             <hr />
                         </Fragment>
                     );

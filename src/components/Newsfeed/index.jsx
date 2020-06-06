@@ -13,21 +13,19 @@ function loadDocs(callback, oldNews = []) {
     })
         .then(
             response => {
-                let data = [];
-                console.log(response.data.sheets[0].data[0].rowData);
-                response.data.sheets[0].data[0].rowData.forEach(element => {
-                    console.log(element);
-                    element = element.values;
-                    data.push({
-                        title: element[7].formattedValue,
-                        href: element[7].formattedValue,
-                        date: element[0].formattedValue,
-                        region: element[1].formattedValue,
-                        origin: element[6].formattedValue,
-                        digest: element[9].formattedValue,
-                        source: element[5].formattedValue
-                    })
-                });
+                let data = response.data.sheets[0].data[0].rowData
+                    .map(i => i.values)
+                    .map(element =>
+                        ({
+                            title: element[7].formattedValue,
+                            href: element[7].formattedValue,
+                            date: element[0].formattedValue,
+                            region: element[1].formattedValue,
+                            origin: element[6].formattedValue,
+                            digest: element[9].formattedValue,
+                            source: element[5].formattedValue
+                        })
+                    );
                 callback(data);
             },
             response => {
@@ -47,10 +45,7 @@ class Newsfeed extends React.Component {
     }
 
     componentDidMount() {
-        loadDocs(docs => {
-            console.log(docs);
-            this.handleChange(docs)
-        });
+        this.loadMore([])
     }
 
     loadMore(oldNews) {
@@ -77,7 +72,7 @@ class Newsfeed extends React.Component {
                         </Fragment>
                     );
                 })}
-                <div className={style.moreButton} onClick={() => this.loadMore(news)}>Показать ещё...</div>
+                <div className={style.moreButton} onClick={() => this.loadMore(news)}>Показать ещё</div>
             </div>
         );
     }

@@ -34,6 +34,8 @@ const CasesBySocial = () => {
     return 'Загрузка...';
   }
 
+  console.log('AAAAAAAAAAA', data)
+
   return (
     <div className={style.root}>
       <HorizontalBarChart

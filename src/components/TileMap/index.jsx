@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import gradstop from 'gradstop';
+import { useHistory } from "react-router-dom";
 
 import styles from './TileMap.scss';
 import {
   colorSchema,
   dataBySocials,
   getMapValues,
+  getValuesFx,
   mapSettings,
   rawData,
   selectedSocial,
@@ -15,6 +17,7 @@ import {
   setSelectedTiles,
   socialList,
 } from '../../utils/effector';
+import history from '../../utils/history';
 
 import GenericChart from '../GenericChart';
 import { useStore } from 'effector-react';
@@ -144,50 +147,76 @@ const TileMap = () => {
   console.log('mapData', mapData);
 
   const buildTileMap = (data, mapHeight, mapWidth, svg) => {
-    const maxColumns = d3.max(data, d => parseInt(d.col, 10));
-    const maxRows = d3.max(data, d => parseInt(d.row, 10));
+    getValuesFx({
+      range: 'Stat!B1:D86',
+      dateTimeRenderOption: 'SERIAL_NUMBER',
+      majorDimension: 'COLUMNS'
+    }).then(dataDocs => {
+      const maxColumns = d3.max(data, d => parseInt(d.col, 10));
+      const maxRows = d3.max(data, d => parseInt(d.row, 10));
 
-    const tileWidth = mapWidth / (maxColumns + 1);
-    const tileHeight = mapHeight / (maxRows + 1);
+      const tileWidth = mapWidth / (maxColumns + 1);
+      const tileHeight = mapHeight / (maxRows + 1);
 
-    svg.append('g').attr('id', 'tileArea');
+      svg.append('g').attr('id', 'tileArea');
+      const tile = svg
+        .select('#tileArea')
+        .selectAll('g')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('data-id', d => d[MAP_ID_KEY])
+        .on('mouseover', function(d) {
+          let elements = document.getElementById('block');
+          elements.style.opacity = 1;
+          elements.style.left = d3.event.pageX + 10 + 'px';
+          elements.style.top = d3.event.pageY + 'px';
+          let elementRegion = document.getElementById('textRegion');
+          elementRegion.textContent = d.region;
+          let elementCount = document.getElementById('textCount');
+          elementCount.textContent = 'Количество случаев ' + dataDocs[0][dataDocs[1].indexOf(d[MAP_ID_KEY])];
+          let elementPopulation = document.getElementById('textPopulation');
+          elementPopulation.textContent = 'Население ' + dataDocs[2][dataDocs[1].indexOf(d[MAP_ID_KEY])];
+        })
+        .on('mouseout', function(d) {
+          let elements = document.getElementById('block');
+          elements.style.opacity = 0;
+          elements.style.left = window.innerWidth / 2 + "px";
+          elements.style.top = window.innerHeight / 2 + "px";
+        })
+        .on('click', (d) => {
+          setSelectedTiles([d[MAP_ID_KEY]]);
+          history.push('/' + dataDocs[1].indexOf(d[MAP_ID_KEY]));
+        })
+        .classed(styles['tile-map__tile-wrapper'], true);
 
-    const tile = svg
-      .select('#tileArea')
-      .selectAll('g')
-      .data(data)
-      .enter()
-      .append('g')
-      .attr('data-id', d => d[MAP_ID_KEY])
-      .on('click', d => setSelectedTiles([d[MAP_ID_KEY]]))
-      .classed(styles['tile-map__tile-wrapper'], true);
+      tile
+        .append('rect')
+        .style('fill', d => d.color)
+        .attr('width', tileWidth)
+        .attr('height', tileHeight)
+        .attr('x', d => d.col * tileWidth)
+        .attr('y', d => d.row * tileHeight)
+        .classed(styles['tile-map__tile'], true);
 
-    tile
-      .append('rect')
-      .style('fill', d => d.color)
-      .attr('width', tileWidth)
-      .attr('height', tileHeight)
-      .attr('x', d => d.col * tileWidth)
-      .attr('y', d => d.row * tileHeight)
-      .classed(styles['tile-map__tile'], true);
+      tile
+        .append('text')
+        .attr('x', d => d.col * tileWidth + tileWidth / 5)
+        .attr('y', d => d.row * tileHeight + tileHeight / 3)
+        .attr('dy', '.35em')
+        .text(d => d.region_rus)
+        .classed(styles['tile-map__caption'], true);
 
-    tile
-      .append('text')
-      .attr('x', d => d.col * tileWidth + tileWidth / 5)
-      .attr('y', d => d.row * tileHeight + tileHeight / 3)
-      .attr('dy', '.35em')
-      .text(d => d.region_rus)
-      .classed(styles['tile-map__caption'], true);
+      tile
+        .append('text')
+        .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
+        .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
+        .attr('dy', '.35em')
+        .text(d => d.value)
+        .classed(styles['tile-map__caption'], true);
 
-    tile
-      .append('text')
-      .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
-      .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
-      .attr('dy', '.35em')
-      .text(d => d.value)
-      .classed(styles['tile-map__caption'], true);
-
-    return svg;
+      return svg;
+    })
   };
 
   const onChangeSocial = (e) => {
@@ -219,6 +248,12 @@ const TileMap = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      <div id='block' style={{left: 0, top: 0, opacity:0, position:'absolute', backgroundColor: 'rgb(108, 205, 216,0.7)'}}>
+        <h3 id='textRegion'>1</h3>
+        <h3 id='textCount'>1</h3>
+        <h3 id='textPopulation'>1</h3>
       </div>
     </div>
   );

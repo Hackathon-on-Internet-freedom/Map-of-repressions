@@ -7,22 +7,20 @@ import style from './newsfeed.scss';
 function loadDocs(callback, oldNews = []) {
 
     return api.gsheet.getData({
-        ranges: 'LENTA!A' + (2 + oldNews.length) + ':J' + (11 + oldNews.length),
-        fields: 'sheets',
+        ranges: 'LENTA!A' + (2 + oldNews.length) + ':J' + (11 + oldNews.length)
     })
         .then(
             response => {
-                let data = response.data.sheets[0].data[0].rowData
-                    .map(i => i.values)
+                let data = response.data.values
                     .map(element =>
                         ({
-                            title: element[7].formattedValue,
-                            href: element[7].formattedValue,
-                            date: element[0].formattedValue,
-                            region: element[1].formattedValue,
-                            origin: element[6].formattedValue,
-                            digest: element[9].formattedValue,
-                            source: element[5].formattedValue
+                            title: element[7],
+                            href: element[7],
+                            date: element[0],
+                            region: element[1],
+                            origin: element[6],
+                            digest: element[9],
+                            source: element[5]
                         })
                     );
                 callback(data);

@@ -28,6 +28,10 @@
   font-size: 16px;
 }
 
+.headerText {
+  font-size: 44px;
+}
+
 .charts {
   display: flex;
   justify-content: space-between;

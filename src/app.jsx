@@ -1,14 +1,22 @@
 import React, { useEffect } from 'react';
 import { hot } from 'react-hot-loader';
+import {
+  Router,
+  Switch,
+  Route
+} from "react-router-dom";
 
 import style from './app.css';
 import { getDataFx } from './utils/effector';
+import history from "./utils/history";
 
 import TileMap from './components/TileMap';
 import MonthGraph from './components/MonthGraph';
 import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 import Newsfeed from './components/Newsfeed';
+import Statistic from './components/Statistic';
+import DetailsRegion from './components/DetailsRegion/DetailsRegion';
 
 const App = () => {
   useEffect(() => {
@@ -16,22 +24,30 @@ const App = () => {
   }, []);
 
   return (
-    <div className={style.app}>
-      <TileMap />
-      {/* <PieChart */}
-      {/*    data={socialMediaData} */}
-      {/*    height={500} */}
-      {/*    width={1000} */}
-      {/*    id={'PieChart'} */}
-      {/* /> */}
-      <div className={style.charts}>
-        <MonthGraph />
-        <DiagramCasesPer100Thousand />
-        <CasesBySocial />
-      </div>
+    <Router history={history}>
+      <div className={style.app}>
+        <div className={style.headerText}>
+          Карта репрессий
+        </div>
+        <Statistic />
+        <TileMap />
 
-      <Newsfeed />
-    </div>
+        <Switch>
+          <Route exact path="/">
+            <div className={style.charts}>
+              <MonthGraph />
+              <DiagramCasesPer100Thousand />
+              <CasesBySocial />
+            </div>
+            <Newsfeed />
+          </Route>
+
+          <Route path="/:id">
+            <DetailsRegion/>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 

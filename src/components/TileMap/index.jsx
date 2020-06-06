@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
-import gradstop from 'gradstop';
 
 import styles from './TileMap.scss';
 import {
+  casesBySocials,
   colorSchema,
   dataBySocials,
   getValuesFx,
@@ -15,52 +15,14 @@ import {
   setSelectedTiles,
 } from '../../utils/effector';
 import {
-  handleColors,
-  handleRegions,
-  MAP_SHEET_ID,
-  NUMBER_OF_REGIONS,
-  API_KEY,
+  getMapData,
   ORDER,
   VIEW,
   toggleOrder
 } from './utils';
 
-import GenericChart from '../GenericChart';
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
-
-const createColors = (values, colors) => {
-  let colorMap = {}
-  const valuesSet = new Set(values);
-  const gradient = gradstop({
-    stops: valuesSet.size,
-    inputFormat: 'hex',
-    colorArray: [colors.hot, colors.cold]
-  });
-  const orderedValuesList = Array.from(valuesSet).sort((a, b) => b - a);
-  for (let i = 0; i < gradient.length; i++) {
-    colorMap[orderedValuesList[i]] = gradient[i];
-  }
-  return colorMap;
-}
-
-function getMapData(data, settings, colors) {
-  const casesByRegion = data.reduce((acc, row) => {
-    acc[row[2]] = 1 + (acc[row[2]] || 0);
-    return acc;
-  }, {});
-
-  const colorMap = createColors(
-    [0, ...Object.values(casesByRegion)],
-    colors,
-  );
-
-  return Object.entries(settings).map(([id, obj]) => ({
-    ...obj,
-    value: casesByRegion[id],
-    color: colorMap[casesByRegion[id] || 0],
-  }));
-}
 
 const TileMap = ({ mapWidth, mapHeight }) => {
   const [tileData, setTileData] = useState(false);
@@ -92,25 +54,33 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
   const allData = useStore(rawData);
   const socialDataMap = useStore(dataBySocials);
+  const socialKeys = useStore(casesBySocials);
   const settings = useStore(mapSettings);
   const colors = useStore(colorSchema);
 
   const currentSocial = useStore(selectedSocial);
 
   const socials = useMemo(
-    () => (['Все площадки', ...Object.keys(socialDataMap)]),
-    [socialDataMap],
+    () => ([
+      'Все площадки',
+      ...socialKeys.data.map(({ name }) => name),
+    ]),
+    [socialKeys],
   );
 
   const mapData = useMemo(
     () => {
       if (currentSocial === 'Все площадки') {
         return allData;
+      } else if (currentSocial === socialKeys.fold.name) {
+        return socialKeys.fold.items.reduce((acc, key) => {
+          return acc.concat(socialDataMap[key]);
+        }, []);
       }
 
       return socialDataMap[currentSocial];
     },
-    [allData, socialDataMap, currentSocial],
+    [allData, socialDataMap, socialKeys, currentSocial],
   );
 
   const data = useMemo(
@@ -128,6 +98,17 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     [mapData, settings, colors],
   );
 
+  const numOfRegions = useMemo(
+    () => {
+      const regions = {};
+      data.forEach(row => {
+        regions[row[MAP_ID_KEY]] = true;
+      });
+      return Object.keys(regions).length;
+    },
+    [data],
+  );
+
   const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
   useEffect(() => {
     if (data) buildTileMap();
@@ -135,13 +116,13 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
   const calcX = (d, mC) => {
     if (view.type === VIEW.map) return d.col;
-    if (view.order === ORDER.desc) return (NUMBER_OF_REGIONS - 1 - d.rank) % mC;
+    if (view.order === ORDER.desc) return (numOfRegions - 1 - d.rank) % mC;
     return d.rank % mC;
   }
 
   const calcY = (d, mC) => {
     if (view.type === VIEW.map) return d.row;
-    if (view.order === ORDER.desc) return Math.floor((NUMBER_OF_REGIONS - 1 - d.rank) / mC);
+    if (view.order === ORDER.desc) return Math.floor((numOfRegions - 1 - d.rank) / mC);
     return Math.floor(d.rank / mC);
   }
 
@@ -228,11 +209,18 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
   return (
     <div className={styles.root}>
-      <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>Sort by {view.order}</button>
-      {view.type === VIEW.tileChart && <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>Map View</button>}
       <div id="TileChart" />
 
       <div className={styles.controls}>
+        <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>
+          Sort by {view.order}
+        </button>
+        {view.type === VIEW.tileChart && (
+          <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>
+            Map View
+          </button>
+        )}
+
         <select
           name="social"
           onChange={onChangeSocial}

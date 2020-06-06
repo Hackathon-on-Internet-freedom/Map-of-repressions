@@ -190,3 +190,26 @@ export const dataBySocials = rawData.map(rows => {
     return acc;
   }, {});
 });
+
+export const casesBySocials = dataBySocials.map(data => {
+  const values = Object.keys(data).map(name => ({
+    name,
+    value: data[name].length,
+  }));
+
+  values.sort((a, b) => b.value - a.value);
+
+  return {
+    data: [
+      ...values.slice(0, 10),
+      values.slice(10).reduce((acc, { value }) => {
+        acc.value += value;
+        return acc;
+      }, { name: 'Другое', value: 0 }),
+    ],
+    fold: {
+      name: 'Другое',
+      items: values.slice(10).map(({ name }) => name),
+    },
+  };
+});

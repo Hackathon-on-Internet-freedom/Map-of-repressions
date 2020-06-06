@@ -9,39 +9,36 @@ import MonthGraph from './components/MonthGraph';
 import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 import Newsfeed from './components/Newsfeed';
+import Statistic from './components/Statistic';
 import DetailsRegion from './components/DetailsRegion/DetailsRegion';
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
-  Route,
+  Route
 } from "react-router-dom";
 
 const App = () => (
   <Router history={history}>
-    <TileMap />
-    <Switch>
-      <Route exact path="/">
-        <div className={style.app}>
-          {/* <PieChart */}
-          {/*    data={socialMediaData} */}
-          {/*    height={500} */}
-          {/*    width={1000} */}
-          {/*    id={'PieChart'} */}
-          {/* /> */}
+    <div className={style.app}>
+      <div className={style.headerText}>Карта репрессий</div>
+      <Statistic />
+      <TileMap />
+
+      <Switch>
+        <Route exact path="/">
           <div className={style.charts}>
             <MonthGraph />
             <DiagramCasesPer100Thousand />
             <CasesBySocial />
           </div>
-
           <Newsfeed />
-        </div>
-      </Route>
-      <Route path="/:id">
-        <DetailsRegion/>
-      </Route>
-    </Switch>
+        </Route>
+        <Route path="/:id">
+          <DetailsRegion/>
+        </Route>
+      </Switch>
+    </div>
   </Router>
-      );
+);
 
 export default hot(module)(App);

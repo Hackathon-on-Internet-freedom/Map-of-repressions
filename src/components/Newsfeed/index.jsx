@@ -1,59 +1,37 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import NewsfeedItem from './NewsfeedItem';
-
-function initClient(callback) {
-    // 2. Initialize the JavaScript client library.
-    window.gapi.client
-        .init({
-            apiKey: 'AIzaSyCKivLrYYPmTIMuJr_QB_Y6-LXmVz-YoTs',
-            // Your API key will be automatically added to the Discovery Document URLs.
-            discoveryDocs: [
-                'https://sheets.googleapis.com/$discovery/rest?version=v4',
-            ],
-        })
-        .then(() => {
-            // 3. Initialize and make the API request.
-            loadDocs(callback);
-        });
-}
-
-function init(callback) {
-    window.gapi.load('client', () => initClient(callback));
-}
+import api from '../../api';
 
 function loadDocs(callback, oldNews = []) {
 
-    window.gapi.client.load('sheets', 'v4', () => {
-        window.gapi.client.sheets.spreadsheets.values
-            .get({
-                spreadsheetId: '1HRQmWpdrt0kmFvCv4Auk66QxSGJahh0_06wV5rTYRb8',
-                range: 'LENTA!A'+(2+oldNews.length)+':J'+(11+oldNews.length),
-                dateTimeRenderOption: 'SERIAL_NUMBER',
-                majorDimension: 'ROWS'
-            })
-            .then(
-                response => {
-                    let data = [];
-                    //console.log(response.result.values);
-                    response.result.values.forEach(element => {
-                        //console.log(element);
-                        data.push({
-                            title: element[7],
-                            date: element[0],
-                            region: element[1],
-                            origin: element[6],
-                            digest: element[9],
-                            source: element[5]
-                        })
-                    });
-                    callback(data);
-                },
-                response => {
-                    callback([false, response.result.error]);
-                },
-            );
-    });
+    return api.gsheet.getData({
+        ranges: 'LENTA!A' + (2 + oldNews.length) + ':J' + (11 + oldNews.length),
+        fields: 'sheets',
+    })
+        .then(
+            response => {
+                let data = [];
+                console.log(response.data.sheets[0].data[0].rowData);
+                response.data.sheets[0].data[0].rowData.forEach(element => {
+                    console.log(element);
+                    element = element.values;
+                    data.push({
+                        title: element[7].formattedValue,
+                        href: element[7].formattedValue,
+                        date: element[0].formattedValue,
+                        region: element[1].formattedValue,
+                        origin: element[6].formattedValue,
+                        digest: element[9].formattedValue,
+                        source: element[5].formattedValue
+                    })
+                });
+                callback(data);
+            },
+            response => {
+                callback([false, response.result.error]);
+            },
+        );
 }
 
 class Newsfeed extends React.Component {
@@ -67,7 +45,7 @@ class Newsfeed extends React.Component {
     }
 
     componentDidMount() {
-        init(docs => {
+        loadDocs(docs => {
             console.log(docs);
             this.handleChange(docs)
         });
@@ -90,7 +68,12 @@ class Newsfeed extends React.Component {
             <div>
                 {news.map(item => {
                     console.log(item);
-                    return <NewsfeedItem key={item} data={item} />;
+                    return (
+                        <Fragment>
+                            <NewsfeedItem key={item} data={item} />
+                            <hr />
+                        </Fragment>
+                    );
                 })}
                 <button onClick={() => this.loadMore(news)}>Показать ещё...</button>
             </div>

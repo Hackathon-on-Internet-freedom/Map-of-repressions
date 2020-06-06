@@ -22,12 +22,13 @@ const CasesBySocial = () => {
   return (
     <div className={style.root}>
       <HorizontalBarChart
-        id="CasesBySocial"
-        height={500}
-        width={350}
+        header="Кол-во инцидентов в соцсетях"
+        height={400}
+        width={500}
         data={data}
-        xAxisLabel="Число инцидентов"
-        yAxisLabel="Соцсеть"
+        yAxisProps={{
+          width: 160
+        }}
       />
     </div>
   );

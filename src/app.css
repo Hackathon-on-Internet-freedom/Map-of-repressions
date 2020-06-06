@@ -21,6 +21,7 @@
 
 .app {
   display: flex;
+  flex-wrap: wrap;
   flex-flow: column nowrap;
   align-items: center;
   font-family: "Roboto Slab", sans-serif;

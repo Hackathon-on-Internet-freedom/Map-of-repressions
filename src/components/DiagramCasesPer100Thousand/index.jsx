@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
 import style from './DiagramCasesPer100Thousand.scss';
 import { getValuesFx } from '../../utils/effector';
-
 import HorizontalBarChart from '../HorizontalBarChart';
 
 function DiagramCasesPer100Thousand() {
@@ -22,15 +20,16 @@ function DiagramCasesPer100Thousand() {
   return (
     <div className={style.root}>
       <HorizontalBarChart
-        id="DiagramCasesPer100Thousand"
-        height={500}
-        width={350}
+        header="Кол-во дел на 100 тыс. населения"
+        width={500}
+        height={1200}
         data={data}
-        xAxisLabel="Кол-во дел на 100 тыс. населения"
-        yAxisLabel="Регионы"
+        yAxisProps={{
+          width: 260
+        }}
       />
     </div>
-  );
+  )
 }
 
 export default DiagramCasesPer100Thousand;

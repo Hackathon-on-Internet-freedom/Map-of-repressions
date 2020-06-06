@@ -10,9 +10,9 @@ import {
   mapSettings,
   rawData,
   selectedSocial,
-  selectedTiles,
+  selectedTile,
   setSelectedSocial,
-  setSelectedTiles,
+  setSelectedTile,
 } from '../../utils/effector';
 import {
   getMapData,
@@ -20,6 +20,7 @@ import {
   VIEW,
   toggleOrder
 } from './utils';
+import history from '../../utils/history';
 
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
@@ -35,19 +36,14 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   }, []);
 
   useEffect(() => {
-    selectedTiles.watch(state => {
+    selectedTile.watch(state => {
       document.querySelectorAll('[data-id]').forEach(el => {
         el.classList.remove(styles['tile-map__selected']);
       });
 
-      if (state.length) {
-        const elements = document.getElementsByClassName(styles['tile-map__tile-wrapper']);
-
-        for (const el of elements) {
-          if (state.includes(el.attributes['data-id'].value)) {
-            el.classList.add(styles['tile-map__selected']);
-          }
-        }
+      if (state) {
+        document.querySelector(`[data-id=${state}]`)
+          .classList.add(styles['tile-map__selected']);
       }
     });
   }, []);
@@ -191,8 +187,11 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         elements.style.top = window.innerHeight / 2 + "px";
       })
       .on('click', (d) => {
-        setSelectedTiles([d[MAP_ID_KEY]]);
-        history.push('/' + tileData[1].indexOf(d[MAP_ID_KEY]));
+        setSelectedTile(d[MAP_ID_KEY]);
+        const path = selectedTile.getState()
+          ? tileData[1].indexOf(d[MAP_ID_KEY])
+          : '';
+        history.push('/' + path);
       })
       .classed(styles['tile-map__tile-wrapper'], true);
 

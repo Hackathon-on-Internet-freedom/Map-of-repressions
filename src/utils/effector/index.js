@@ -127,15 +127,9 @@ export const getSettingsFx = createEffect('get settings').use(
   }
 );
 
-export const setSelectedTiles = createEvent();
-export const selectedTiles = createStore([])
-  .on(setSelectedTiles, (state, data) => {
-    if (data.length === 1 && state.length === 1 && data[0] === state[0]) {
-      return [];
-    }
-
-    return [...data];
-  });
+export const setSelectedTile = createEvent();
+export const selectedTile = createStore('')
+  .on(setSelectedTile, (state, data) => data === state ? '' : data);
 
 export const setSelectedSocial = createEvent();
 export const selectedSocial = createStore('Все площадки')

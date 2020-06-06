@@ -5,8 +5,6 @@ import gradstop from 'gradstop';
 import styles from './TileMap.scss';
 import { getMapValues, selectedTile, setSelectedTile } from '../../utils/effector';
 
-import GenericChart from '../GenericChart';
-
 const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
 const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
 
@@ -72,7 +70,7 @@ const toggleOrder = order => {
   return ORDER.asc;
 }
 
-const TileMap = () => {
+const TileMap = ({ mapWidth, mapHeight, chartWidth, chartHeight }) => {
   const [data, setData] = useState(false);
   useEffect(() => {
     getMapValues({
@@ -100,17 +98,17 @@ const TileMap = () => {
 
   const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
 
-  if (!data) {
-    return 'Загрузка...';
-  }
 
-  const buildTileMap = (data, mapHeight, mapWidth, view, svg) => {
+  const buildTileMap = () => {
+    console.log('buildTileMap')
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
 
     const tileWidth = mapWidth / (maxColumns + 1);
     const tileHeight = mapHeight / (maxRows + 1);
 
+    const svg = d3.select('#TileChart').append('svg');
+    svg.attr('width', chartWidth).attr('height', chartHeight);
     svg.append('g').attr('id', 'tileArea');
 
     const tile = svg
@@ -155,24 +153,28 @@ const TileMap = () => {
     return svg;
   };
 
-  const updateView = view => {
-    setView(view);
-    buildTileMap.bind(null, data, 500, 1000, view);
+  useEffect(() => {
+    if (data) buildTileMap();
+  }, [view]);
+  
+  if (!data) {
+    return 'Загрузка...';
   }
 
   return (
     <div>
       <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>Sort by {view.order}</button>
       {view.type === VIEW.tileChart && <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>Map View</button>}
-      <GenericChart
-        containerId="TileChart"
-        chartWidth={1000}
-        chartHeight={500}
-        data={data}
-        buildChart={buildTileMap.bind(null, data, 500, 1000, view)}
-      />
+      <div id="TileChart"></div>
     </div>
   )
 };
+
+TileMap.defaultProps = {
+  mapHeight: 500,
+  mapWidth: 1000,
+  chartWidth: 1000,
+  chartHeight: 500
+}
 
 export default TileMap;

@@ -54,12 +54,12 @@ export const getMapValues = createEffect('get map values').use(
     try {
 
       const data = await window.gapi.client.sheets.spreadsheets.values
-        .get({
+        .batchGet({
           spreadsheetId: params.spreadsheetId,
-          range: params.range,
+          ranges: params.ranges,
           majorDimension: params.majorDimension,
         });
-      return data.result.values;
+      return data.result.valueRanges;
     } catch (e) {
       console.error('Load error:', e);
     }

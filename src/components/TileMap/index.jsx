@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import { getMapValues } from '../../utils/effector';
-import GenericChart from '../GenericChart';
-import * as styles from './TileMap.scss';
 import gradstop from 'gradstop';
+
+import styles from './TileMap.scss';
+import { getMapValues, selectedTile, setSelectedTile } from '../../utils/effector';
+
+import GenericChart from '../GenericChart';
 
 const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
 const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
@@ -61,6 +63,19 @@ const TileMap = () => {
     });
   }, []);
 
+  useEffect(() => {
+    selectedTile.watch(state => {
+      document.querySelectorAll('[data-id]').forEach(el => {
+        el.classList.remove(styles['tile-map__selected']);
+      });
+
+      if (state) {
+        document.querySelector(`[data-id=${state}]`)
+          .classList.add(styles['tile-map__selected']);
+      }
+    });
+  }, []);
+
   if (!data) {
     return 'Загрузка...';
   }
@@ -79,7 +94,10 @@ const TileMap = () => {
       .selectAll('g')
       .data(data)
       .enter()
-      .append('g');
+      .append('g')
+      .attr('data-id', d => d.id_reg)
+      .on('click', d => setSelectedTile(d.id_reg))
+      .classed(styles['tile-map__tile-wrapper'], true);
 
     tile
       .append('rect')

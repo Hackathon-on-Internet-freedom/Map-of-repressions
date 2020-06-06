@@ -6,6 +6,15 @@
   }
 }
 
+.tile-map__tile-wrapper:hover {
+  cursor: pointer;
+  opacity: .8;
+}
+
+.tile-map__selected rect {
+  fill: green !important;
+}
+
 .tile-map__tile {
   stroke: #FFF;
   stroke-width: 4;

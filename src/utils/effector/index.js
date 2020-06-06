@@ -65,3 +65,7 @@ export const getMapValues = createEffect('get map values').use(
     }
   }
 )
+
+export const setSelectedTile = createEvent();
+export const selectedTile = createStore('')
+  .on(setSelectedTile, (state, data) => data === state ? '' : data);

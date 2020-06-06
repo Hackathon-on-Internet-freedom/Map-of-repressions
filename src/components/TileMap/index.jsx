@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import * as d3 from 'd3';
 import gradstop from 'gradstop';
-import { useHistory } from "react-router-dom";
 
 import styles from './TileMap.scss';
 import {
   colorSchema,
   dataBySocials,
-  getMapValues,
   getValuesFx,
   mapSettings,
   rawData,
@@ -22,14 +20,6 @@ import history from '../../utils/history';
 import GenericChart from '../GenericChart';
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
-import { combine } from 'effector';
-
-const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
-const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
-
-const handleColors = data => {
-  return {'hot': data[0][0], 'cold': data[0][1]};
-}
 
 const createColors = (values, colors) => {
   let colorMap = {}
@@ -46,34 +36,11 @@ const createColors = (values, colors) => {
   return colorMap;
 }
 
-const handleRegions = (data, colors) => {
-  let mapData = [];
-  let values = [];
-  let keys = data[0];
-  for (let i = 1; i < data.length; i++) {
-    let region = {};
-    for (let j = 0; j < keys.length; j++) {
-      region[keys[j]] = data[i][j];
-    }
-    values.push(region.value);
-    mapData.push(region);
-  }
-  let colorsMap = createColors(values, colors);
-  mapData.forEach(r => r.color = colorsMap[r.value]);
-  return mapData;
-}
-
-const handleData = data => {
-  return handleRegions(data[0].values, handleColors(data[1].values));
-}
-
 function getMapData(data, settings, colors) {
   const casesByRegion = data.reduce((acc, row) => {
     acc[row[2]] = 1 + (acc[row[2]] || 0);
     return acc;
   }, {});
-
-  console.log('cases', casesByRegion);
 
   const colorMap = createColors(
     [0, ...Object.values(casesByRegion)],
@@ -144,10 +111,8 @@ const TileMap = () => {
     return 'Загрузка...';
   }
 
-  console.log('mapData', mapData);
-
   const buildTileMap = (data, mapHeight, mapWidth, svg) => {
-    getValuesFx({
+    return getValuesFx({
       range: 'Stat!B1:D86',
       dateTimeRenderOption: 'SERIAL_NUMBER',
       majorDimension: 'COLUMNS'
@@ -174,9 +139,9 @@ const TileMap = () => {
           let elementRegion = document.getElementById('textRegion');
           elementRegion.textContent = d.region;
           let elementCount = document.getElementById('textCount');
-          elementCount.textContent = 'Количество случаев ' + dataDocs[0][dataDocs[1].indexOf(d[MAP_ID_KEY])];
+          elementCount.textContent = 'Количество случаев: ' + dataDocs[0][dataDocs[1].indexOf(d[MAP_ID_KEY])];
           let elementPopulation = document.getElementById('textPopulation');
-          elementPopulation.textContent = 'Население ' + dataDocs[2][dataDocs[1].indexOf(d[MAP_ID_KEY])];
+          elementPopulation.textContent = 'Население: ' + dataDocs[2][dataDocs[1].indexOf(d[MAP_ID_KEY])];
         })
         .on('mouseout', function(d) {
           let elements = document.getElementById('block');
@@ -250,10 +215,10 @@ const TileMap = () => {
         </select>
       </div>
 
-      <div id='block' style={{left: 0, top: 0, opacity:0, position:'absolute', backgroundColor: 'rgb(108, 205, 216,0.7)'}}>
-        <h3 id='textRegion'>1</h3>
-        <h3 id='textCount'>1</h3>
-        <h3 id='textPopulation'>1</h3>
+      <div id='block' className={styles.tooltip}>
+        <div id='textRegion' />
+        <div id='textCount' />
+        <div id='textPopulation' />
       </div>
     </div>
   );

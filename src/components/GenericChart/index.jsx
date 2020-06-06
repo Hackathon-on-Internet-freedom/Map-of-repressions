@@ -13,19 +13,22 @@ const GenericChart = ({
     containerId,
     chartHeight,
     chartWidth,
-    data,
     buildChart,
   ) => {
+    document.getElementById(containerId).innerHTML = '<div>Загрузка...</div>';
     const svg = d3.select(`#${containerId}`).append('svg');
 
     svg.attr('width', chartWidth).attr('height', chartHeight);
 
-    return buildChart(svg);
+    buildChart(svg)
+      .then(() => {
+        document.querySelector(`#${containerId} div`).remove();
+      });
   };
 
   useEffect(() => {
-    addContent(containerId, chartHeight, chartWidth, data, buildChart);
-  }, []);
+    addContent(containerId, chartHeight, chartWidth, buildChart);
+  }, [data]);
 
   return <div id={containerId} />;
 };

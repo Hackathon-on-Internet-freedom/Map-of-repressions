@@ -36,14 +36,22 @@
   padding-left: 40px;
 }
 
-div.tooltip {
+.tooltip {
   position: absolute;
   text-align: center;
-  padding: .2rem;
-  background: #313639;
+  padding: 4px 8px;
+  background-color: #383a3d;
   color: #f9f9f9;
-  border: 0px;
+  border: 0;
   border-radius: 8px;
   pointer-events: none;
   font-size: .7rem;
+  opacity: 0;
+}
+.tooltip div:first-child {
+  font-size: 1rem;
+  padding: 0 4px;
+}
+.tooltip div {
+  margin-bottom: 6px;
 }

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import NewsfeedItem from './NewsfeedItem';
 import api from '../../api';
 
+import style from './newsfeed.scss';
+
 function loadDocs(callback, oldNews = []) {
 
     return api.gsheet.getData({
@@ -65,7 +67,7 @@ class Newsfeed extends React.Component {
     render() {
         const news = this.state.news;
         return (
-            <div>
+            <div className={style.newsfeed}>
                 {news.map(item => {
                     console.log(item);
                     return (
@@ -75,7 +77,7 @@ class Newsfeed extends React.Component {
                         </Fragment>
                     );
                 })}
-                <button onClick={() => this.loadMore(news)}>Показать ещё...</button>
+                <div className={style.moreButton} onClick={() => this.loadMore(news)}>Показать ещё...</div>
             </div>
         );
     }

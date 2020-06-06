@@ -8,6 +8,8 @@ import MonthGraph from './components/MonthGraph';
 import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 
+import Newsfeed from './components/Newsfeed';
+
 const App = () => (
   <div className={style.app}>
     <TileMap />
@@ -22,6 +24,9 @@ const App = () => (
       <DiagramCasesPer100Thousand />
       <CasesBySocial />
     </div>
+
+    <Newsfeed />
+
   </div>
 );
 

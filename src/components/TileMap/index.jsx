@@ -1,58 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import gradstop from 'gradstop';
-import { useHistory } from "react-router-dom";
 import styles from './TileMap.scss';
-import { getMapValues, selectedTile, setSelectedTile, getValuesFx } from '../../utils/effector';
-import history from "../../utils/history";
+import {
+  getMapValues,
+  selectedTile,
+  setSelectedTile
+} from '../../utils/effector';
+import {
+  handleColors,
+  handleRegions,
+  MAP_SHEET_ID,
+  NUMBER_OF_REGIONS,
+  API_KEY,
+  ORDER,
+  VIEW,
+  toggleOrder
+} from "./utils";
 
-import GenericChart from '../GenericChart';
-
-const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
-const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
-
-
-const handleColors = data => {
-  return {'hot': data[0][0], 'cold': data[0][1]};
-}
-
-const createColors = (values, colors) => {
-  let colorMap = {}
-  const valuesSet = new Set(values);
-  const gradient = gradstop({
-    stops: valuesSet.size,
-    inputFormat: 'hex',
-    colorArray: [colors.hot, colors.cold]
-  });
-  const orderedValuesList = Array.from(valuesSet).sort().reverse();
-  for (let i = 0; i < gradient.length; i++) {
-    colorMap[orderedValuesList[i]] = gradient[i];
-  }
-  return colorMap;
-}
-
-const handleRegions = (data, colors) => {
-  let mapData = [];
-  let values = [];
-  let keys = data[0];
-  for (let i = 1; i < data.length; i++) {
-    let region = {};
-    for (let j = 0; j < keys.length; j++) {
-      region[keys[j]] = data[i][j];
-    }
-    values.push(region.value);
-    mapData.push(region);
-  }
-  let colorsMap = createColors(values, colors);
-  mapData.forEach(r => r.color = colorsMap[r.value]);
-  return mapData;
-}
 
 const handleData = data => {
   return handleRegions(data[0].values, handleColors(data[1].values));
 }
 
-const TileMap = () => {
+const TileMap = ({ mapWidth, mapHeight }) => {
   const [data, setData] = useState(false);
   useEffect(() => {
     getMapValues({
@@ -78,11 +48,24 @@ const TileMap = () => {
     });
   }, []);
 
-  if (!data) {
-    return 'Загрузка...';
+  const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
+  useEffect(() => {
+    if (data) buildTileMap();
+  }, [view, data]);
+
+  const calcX = (d, mC) => {
+    if (view.type === VIEW.map) return d.col;
+    if (view.order === ORDER.desc) return (NUMBER_OF_REGIONS - 1 - d.rank) % mC;
+    return d.rank % mC;
   }
 
-  const buildTileMap = (data, mapHeight, mapWidth, svg) => {
+  const calcY = (d, mC) => {
+    if (view.type === VIEW.map) return d.row;
+    if (view.order === ORDER.desc) return Math.floor((NUMBER_OF_REGIONS - 1 - d.rank) / mC);
+    return Math.floor(d.rank / mC);
+  }
+
+  const buildTileMap = () => {
     getValuesFx({
       range: 'Stat!B1:D86',
       dateTimeRenderOption: 'SERIAL_NUMBER',
@@ -94,7 +77,10 @@ const TileMap = () => {
       const tileWidth = mapWidth / (maxColumns + 1);
       const tileHeight = mapHeight / (maxRows + 1);
 
+      const svg = d3.select('#TileChart').append('svg');
+      svg.attr('width', chartWidth).attr('height', chartHeight);
       svg.append('g').attr('id', 'tileArea');
+
       const tile = svg
         .select('#tileArea')
         .selectAll('g')
@@ -131,22 +117,22 @@ const TileMap = () => {
         .style('fill', d => d.color)
         .attr('width', tileWidth)
         .attr('height', tileHeight)
-        .attr('x', d => d.col * tileWidth)
-        .attr('y', d => d.row * tileHeight)
+        .attr('x', d => calcX(d, maxColumns) * tileWidth)
+        .attr('y', d => calcY(d, maxColumns) * tileHeight)
         .classed(styles['tile-map__tile'], true);
 
       tile
         .append('text')
-        .attr('x', d => d.col * tileWidth + tileWidth / 5)
-        .attr('y', d => d.row * tileHeight + tileHeight / 3)
+        .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth / 5)
+        .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight / 3)
         .attr('dy', '.35em')
         .text(d => d.region_rus)
         .classed(styles['tile-map__caption'], true);
 
       tile
         .append('text')
-        .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
-        .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
+        .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth / 5 + 10)
+        .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight / 3 + 12)
         .attr('dy', '.35em')
         .text(d => d.value)
         .classed(styles['tile-map__caption'], true);
@@ -154,23 +140,28 @@ const TileMap = () => {
       return svg;
     })
   };
+  
+  if (!data) {
+    return 'Загрузка...';
+  }
 
   return (
     <div>
-    <GenericChart
-      containerId="TileChart"
-      chartWidth={1000}
-      chartHeight={500}
-      data={data}
-      buildChart={buildTileMap.bind(null, data, 500, 1000)}
-    />
+      <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>Sort by {view.order}</button>
+      {view.type === VIEW.tileChart && <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>Map View</button>}
+      <div id="TileChart"></div>
       <div id='block' style={{left: 0, top: 0, opacity:0, position:'absolute', backgroundColor: 'rgb(108, 205, 216,0.7)'}}>
         <h3 id='textRegion'>1</h3>
         <h3 id='textCount'>1</h3>
         <h3 id='textPopulation'>1</h3>
       </div>
     </div>
-  );
+  )
 };
+
+TileMap.defaultProps = {
+  mapHeight: 500,
+  mapWidth: 1000,
+}
 
 export default TileMap;

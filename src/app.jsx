@@ -23,7 +23,6 @@ const App = () => (
       <div className={style.headerText}>Карта репрессий</div>
       <Statistic />
       <TileMap />
-
       <Switch>
         <Route exact path="/">
           <div className={style.charts}>

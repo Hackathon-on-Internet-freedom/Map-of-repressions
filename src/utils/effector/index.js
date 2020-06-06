@@ -6,7 +6,7 @@ const onInit = createEvent();
 const isInit = createStore(false)
   .on(onInit, state => true);
 
-export const initFx = createEffect('init').use(async () => {
+export const initFx = createEffect('init').use(async (apiKey) => {
   if (isInit.getState()) {
     return;
   }
@@ -16,7 +16,7 @@ export const initFx = createEffect('init').use(async () => {
   ));
 
   await window.gapi.client.init({
-    apiKey: API_KEY,
+    apiKey: apiKey,
     // Your API key will be automatically added to the Discovery Document URLs.
     discoveryDocs: [
       'https://sheets.googleapis.com/$discovery/rest?version=v4',
@@ -32,7 +32,7 @@ export const initFx = createEffect('init').use(async () => {
 
 export const getValuesFx = createEffect('get values').use(
   async params => {
-    await initFx();
+    await initFx(API_KEY);
 
     try {
       const data = await window.gapi.client.sheets.spreadsheets.values
@@ -46,3 +46,22 @@ export const getValuesFx = createEffect('get values').use(
       console.log('Load error:', e);
     }
   });
+
+export const getMapValues = createEffect('get map values').use(
+  async params => {
+    await initFx(params.apiKey);
+
+    try {
+
+      const data = await window.gapi.client.sheets.spreadsheets.values
+        .get({
+          spreadsheetId: params.spreadsheetId,
+          range: params.range,
+          majorDimension: params.majorDimension,
+        });
+      return data.result.values;
+    } catch (e) {
+      console.error('Load error:', e);
+    }
+  }
+)

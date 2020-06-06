@@ -1,12 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-
+import { getMapValues } from '../../utils/effector';
 import GenericChart from '../GenericChart';
-
 import * as styles from './TileMap.scss';
 
-const TileMap = ({ data, width, height, id }) => {
+const MAP_SHEET_ID = '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE';
+const API_KEY = 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw';
+
+function handleData(data) {
+  let mapData = [];
+  let keys = data[0];
+  for (let i = 1; i < data.length; i++) {
+    let region = {};
+    for (let j = 0; j < keys.length; j++) {
+      region[keys[j]] = data[i][j];
+    }
+    mapData.push(region);
+  }
+  return mapData;
+}
+
+const TileMap = () => {
+  const [data, setData] = useState(false);
+  useEffect(() => {
+    getMapValues({
+      apiKey: API_KEY,
+      range: 'A1:J86',
+      majorDimension: 'ROWS',
+      spreadsheetId: MAP_SHEET_ID,
+    }).then(data => {
+      setData(handleData(data))
+    });
+  }, []);
+
+  if (!data) {
+    return 'Загрузка...';
+  }
+
   const buildTileMap = (data, mapHeight, mapWidth, svg) => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
@@ -40,16 +71,24 @@ const TileMap = ({ data, width, height, id }) => {
       .text(d => d.region_rus)
       .classed(styles['tile-map__caption'], true);
 
+    tile
+      .append('text')
+      .attr('x', d => d.col * tileWidth + tileWidth / 5 + 10)
+      .attr('y', d => d.row * tileHeight + tileHeight / 3 + 12)
+      .attr('dy', '.35em')
+      .text(d => d.value)
+      .classed(styles['tile-map__caption'], true);
+
     return svg;
   };
 
   return (
     <GenericChart
-      containerId={id}
-      chartWidth={width}
-      chartHeight={height}
+      containerId="TileChart"
+      chartWidth={1000}
+      chartHeight={500}
       data={data}
-      buildChart={buildTileMap.bind(null, data, height, width)}
+      buildChart={buildTileMap.bind(null, data, 500, 1000)}
     />
   );
 };

@@ -21,7 +21,9 @@ const CasesBySocial = () => {
         width={500}
         data={data}
         yAxisProps={{
-          width: 160
+          orientation: "right",
+          width: 200,
+          // tick: { fontSize: 24 }
         }}
       />
     </div>

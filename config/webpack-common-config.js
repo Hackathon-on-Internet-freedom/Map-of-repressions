@@ -30,7 +30,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(png|svg|jpg)$/,
+        test: /\.(png|svg|jpg|otf)$/,
         use: ['file-loader'],
       },
     ],

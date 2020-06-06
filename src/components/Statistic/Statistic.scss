@@ -1,16 +1,37 @@
 .container {
   display: flex;
   flex-wrap: wrap;
-  margin: 20px;
+  justify-content: space-between;
+  flex-basis: 100%;
+  margin: 0px 50px 80px 50px;
 }
 
-.header {
-  width: 300px;
-  font-size: 1rem;
+.statContainer {
+  font-family: 'Ubuntu', sans-serif;
+  width: 280px;
+  font-size: 19px;
+  font-weight: bold;
   margin: 30px;
 }
 
-.value {
-  font-size: 1.6rem;
-  margin: 10px 0 30px 0;
+.totalViolations,
+.casesPer100Thousand,
+.frequentArticle,
+.frequentPunishment {
+  font-family: 'Rostelecom Basis', sans-serif;
+  font-size: 35px;
+  margin: 10px 0;
+}
+
+.totalViolations {
+  color: #4e8ca1;
+}
+.casesPer100Thousand {
+  color: #b76a73;
+}
+.frequentArticle {
+  color: #ababab;
+}
+.frequentPunishment {
+  color: #7a2929;
 }

@@ -19,17 +19,43 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Geometria";
+  src: url("./assets/fonts/18194.otf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Rostelecom Basis";
+  src: url("./assets/fonts/18111.otf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url("./assets/fonts/3976.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .app {
   display: flex;
   flex-wrap: wrap;
-  flex-flow: column nowrap;
-  align-items: center;
+  justify-content: space-around;
+  max-width: 1600px;
+  margin: 0 auto;
   font-family: "Roboto Slab", sans-serif;
   font-size: 16px;
 }
 
 .headerText {
+  font-family: "Geometria", sans-serif;
   font-size: 44px;
+  align-items: flex-start;
+  margin: 80px 80px 0px 80px;
+  flex-basis: 100%;
 }
 
 .charts {

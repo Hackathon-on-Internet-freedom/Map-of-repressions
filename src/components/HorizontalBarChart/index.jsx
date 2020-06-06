@@ -1,20 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BarChart, XAxis, YAxis, Tooltip, Bar, CartesianGrid } from 'recharts';
+import { BarChart, XAxis, YAxis, Tooltip, Bar } from 'recharts';
 import utils from '../../utils';
+import style from './HorizontalBarChart.scss';
 
 const HorizontalBarChart = (props) => {
+  const data = props.data.sort((a, b) => b.value - a.value);
+
   return (
     <>
-      <h2>{props.header}</h2>
+      <div className={style.header}>{props.header}</div>
       <BarChart
         width={props.width}
         height={props.height}
         layout="vertical"
-        data={props.data}
+        data={data}
       >
-        <CartesianGrid strokeDasharray="3 3" />
         <XAxis
+          hide
           type="number"
           {...props.xAxisProps}
         />
@@ -22,12 +25,14 @@ const HorizontalBarChart = (props) => {
           type="category"
           dataKey="name"
           interval={0}
-          tick={{ fontSize: 12 }}
+          tickLine={false}
+          axisLine={false}
+          tick={{ fontSize: 16 }}
           tickFormatter={(value) => utils.limitStringLength(value, 33)}
           {...props.yAxisProps}
         />
         <Tooltip formatter={(value) => [value, ""] } separator="" />
-        <Bar dataKey="value" fill="royalblue" {...props.barProps}  />
+        <Bar dataKey="value" fill="#166600" {...props.barProps}  />
       </BarChart>
     </>
   )

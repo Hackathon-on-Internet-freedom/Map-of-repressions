@@ -6,7 +6,6 @@ import {
   casesBySocials,
   colorSchema,
   dataBySocials,
-  getValuesFx,
   mapSettings,
   rawData,
   selectedSocial,
@@ -26,15 +25,6 @@ import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
 
 const TileMap = ({ mapWidth, mapHeight }) => {
-  const [tileData, setTileData] = useState(false);
-  useEffect(() => {
-    getValuesFx({
-      range: 'Stat!B1:D86',
-      dateTimeRenderOption: 'SERIAL_NUMBER',
-      majorDimension: 'COLUMNS'
-    }).then(d => setTileData(d));
-  }, []);
-
   useEffect(() => {
     selectedTile.watch(state => {
       document.querySelectorAll('[data-id]').forEach(el => {
@@ -53,7 +43,6 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const socialKeys = useStore(casesBySocials);
   const settings = useStore(mapSettings);
   const colors = useStore(colorSchema);
-
   const currentSocial = useStore(selectedSocial);
 
   const socials = useMemo(
@@ -108,7 +97,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
   useEffect(() => {
     if (data) buildTileMap();
-  }, [view, data, tileData]);
+  }, [view, data]);
 
   const calcX = (d, mC) => {
     if (view.type === VIEW.map) return d.col;
@@ -153,19 +142,19 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
     tile
       .append('text')
-      .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth / 5)
-      .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight / 3)
+      .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth * 0.1)
+      .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight * 0.8)
       .attr('dy', '.35em')
       .text(d => d.region_rus)
       .classed(styles['tile-map__caption'], true);
 
     tile
       .append('text')
-      .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth / 5 + 10)
-      .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight / 3 + 12)
+      .attr('x', d => calcX(d, maxColumns) * tileWidth + tileWidth * 0.1)
+      .attr('y', d => calcY(d, maxColumns) * tileHeight + tileHeight * 0.3)
       .attr('dy', '.35em')
-      .text(d => d.value)
-      .classed(styles['tile-map__caption'], true);
+      .text(d => d.value || 0)
+      .classed(styles['tile-map__caption_val'], true);
 
     tile
       .on('mouseover', function(d) {
@@ -178,7 +167,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         let elementCount = document.getElementById('textCount');
         elementCount.textContent = 'Количество случаев: ' + (d.value || 0);
         let elementPopulation = document.getElementById('textPopulation');
-        elementPopulation.textContent = 'Население: ' + tileData[2][tileData[1].indexOf(d[MAP_ID_KEY])];
+        elementPopulation.textContent = 'Население: ' + d.population;
       })
       .on('mouseout', function(d) {
         let elements = document.getElementById('block');
@@ -189,7 +178,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
       .on('click', (d) => {
         setSelectedTile(d[MAP_ID_KEY]);
         const path = selectedTile.getState()
-          ? tileData[1].indexOf(d[MAP_ID_KEY])
+          ? data.id_reg
           : '';
         history.push('/' + path);
       })
@@ -246,8 +235,8 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 };
 
 TileMap.defaultProps = {
-  mapHeight: 500,
-  mapWidth: 1000,
+  mapHeight: 700,
+  mapWidth: 1400,
 }
 
 export default TileMap;

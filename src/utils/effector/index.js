@@ -47,16 +47,15 @@ export const getValuesFx = createEffect('get values').use(
     }
   });
 
-export const getMapValues = createEffect('get map values').use(
+export const getBatchValues = createEffect('get batch values').use(
   async params => {
-    await initFx(params.apiKey);
+    await initFx(API_KEY);
 
     try {
       const data = await window.gapi.client.sheets.spreadsheets.values
         .batchGet({
-          spreadsheetId: params.spreadsheetId,
-          ranges: params.ranges,
-          majorDimension: params.majorDimension,
+          ...params,
+          spreadsheetId: SPREADSHEET_ID,
         });
       return data.result.valueRanges;
     } catch (e) {
@@ -97,11 +96,9 @@ export const getSettingsFx = createEffect('get settings').use(
       return;
     }
 
-    const [{ values: settings }, colors] = await getMapValues({
-      apiKey: 'AIzaSyCv-UFnDjRvdIR34CQjOlwM4R3gxAoh3Iw',
-      ranges: ['A1:I86', 'M2:N2'],
+    const [{ values: settings }, colors] = await getBatchValues({
+      ranges: ['RegionalAggregatedStat!A22:L107', 'RegionalAggregatedStat!M23:N23'],
       majorDimension: 'ROWS',
-      spreadsheetId: '1Ak5b1x9Qf7yDw9f3uXliCG3PghE1JpJwPUGhsGF2VoE',
     });
 
     const keys = settings.shift();

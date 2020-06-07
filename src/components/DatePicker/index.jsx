@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 
 import ru from 'date-fns/locale/ru';
-import './react-datepicker.css';
+import './react-datepicker.module.scss';
+import './datepicker.module.scss';
 import styleButton from './styleButton.module.scss';
 
 

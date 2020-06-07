@@ -8,9 +8,11 @@ const DiagramCasesSwticher = () => {
 
   return (
     <div className={style.container}>
-      <div className={style.header}>Динамика дел</div>
-      <button onClick={() => setIsPerYear(true)}>по годам</button>
-      <button onClick={() => setIsPerYear(false)}>по месяцам</button>
+      <div className={style.header}>
+        <div className={style.headerText}>Динамика дел</div>
+        <button className={style.button} onClick={() => setIsPerYear(true)}>по годам</button>
+        <button className={style.button} onClick={() => setIsPerYear(false)}>по месяцам</button>
+      </div>
       {
         isPerYear
         ? <DiagramCasesPerYear />

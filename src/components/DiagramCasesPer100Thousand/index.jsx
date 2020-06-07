@@ -27,8 +27,13 @@ function DiagramCasesPer100Thousand() {
         tooltipProps={{
           cursor: false,
           position: { y: 150, x: 500 },
-          contentStyle: { background: 'transparent' },
-          wrapperStyle: { width: '300px', height: '400px', border: 'none' }
+          contentStyle: {
+            background: 'transparent',
+            color: 'white',
+            border: 'none',
+            fontSize: '33px'
+          },
+          wrapperStyle: { width: '300px', height: '400px' }
         }}
         barProps={{
           fill: '#af788d',

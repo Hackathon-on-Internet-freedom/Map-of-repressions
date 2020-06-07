@@ -18,15 +18,19 @@ const DiagramCasesPerYear = () => {
     <div className={style.container}>
       <VerticalBarChart
         data={data}
-        height={400}
-        tooltipProps={{
-          cursor: false,
-          position: { y: 150, x: 500 },
+        height={600}
+        hideTooltip
+        // tooltipProps={{
+        //   cursor: false,
+        //   position: { y: 150, x: 500 },
           // contentStyle: { background: 'transparent' },
           // wrapperStyle: { width: '300px', height: '400px', border: 'none' }
-        }}
+        // }}
         yAxisProps={{
           hide: true
+        }}
+        barProps={{
+          fill: '#51974a'
         }}
       />
     </div>

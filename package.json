@@ -23,8 +23,8 @@
     "recharts": "^1.8.5"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -44,6 +44,10 @@
     ]
   },
   "devDependencies": {
-    "axios-mock-adapter": "^1.18.1"
+    "@hot-loader/react-dom": "^16.13.0",
+    "axios-mock-adapter": "^1.18.1",
+    "react-app-rewire-hot-loader": "^2.0.1",
+    "react-app-rewired": "^2.1.6",
+    "react-hot-loader": "^4.12.21"
   }
 }

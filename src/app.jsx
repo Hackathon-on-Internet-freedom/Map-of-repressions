@@ -4,6 +4,7 @@ import {
   Switch,
   Route
 } from "react-router-dom";
+import { hot } from 'react-hot-loader';
 
 import style from './app.module.scss';
 import { getDataFx } from './utils/effector';
@@ -58,4 +59,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default hot(module)(App);

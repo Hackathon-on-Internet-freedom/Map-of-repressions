@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import style from './CasesBySocial.scss';
 
-import HorizontalBarChart from '../HorizontalBarChart';
+import HorizontalBarChart from '../basis/HorizontalBarChart';
 
 function sortData(rawData) {
   let data = {}

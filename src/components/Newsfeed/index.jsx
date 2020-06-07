@@ -1,77 +1,61 @@
 import React, { Fragment } from 'react';
 import NewsfeedItem from './NewsfeedItem';
 import api from '../../api';
+import moment from 'moment';
 
 import style from './newsfeed.scss';
+import { startDate, endDate } from '../DatePicker'
 
-function loadDocs(callback, oldNews = []) {
+import { newsData } from '../../utils/effector';
 
-    return api.gsheet.getData({
-        ranges: 'LENTA!A' + (2 + oldNews.length) + ':J' + (11 + oldNews.length)
-    })
-        .then(
-            response => {
-                let data = response.data.values
-                    .map(element =>
-                        ({
-                            title: element[7],
-                            href: element[7],
-                            date: element[0],
-                            region: element[1],
-                            origin: element[6],
-                            digest: element[9],
-                            source: element[5]
-                        })
-                    );
-                callback(data);
-            },
-            response => {
-                callback([false, response.result.error]);
-            },
-        );
-}
+import { createEvent, createStore, createEffect } from 'effector';
+import { useStore } from 'effector-react'
 
-class Newsfeed extends React.Component {
+const showMoreNews = createEvent('show-more-news');
+
+export const selectedNewsRange = createStore(10)
+    .on(showMoreNews, (prevState, payload) => {
+        return prevState + 10;
+    });
+
+const Newsfeed = () => {
+    const range = useStore(selectedNewsRange);
+    const start = useStore(startDate);
+    const end = useStore(endDate);
+    console.log("" + start + " " + end);
+    let news = useStore(newsData);
+
+    news = news
+        .map(element => ({
+            title: element[7],
+            href: element[7],
+            date: element[0],
+            region: element[1],
+            origin: element[6],
+            digest: element[9],
+            source: element[5]
+        }))
+        .filter(e => {
+            const date = moment(e.date, 'D.MM.YYYY').toDate();
+            return (date >= start && date <= end);
+        })
+        .slice(0, range);
+    console.log(news);
 
 
-
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.state = { news: [] };
-    }
-
-    componentDidMount() {
-        this.loadMore([])
-    }
-
-    loadMore(oldNews) {
-        loadDocs(docs => {
-            console.log(docs);
-            this.handleChange([...oldNews, ...docs]);
-        }, oldNews);
-    }
-
-    handleChange(docs) {
-        this.setState({ news: docs });
-    }
-
-    render() {
-        const news = this.state.news;
-        return (
-            <div className={style.newsfeed}>
-                {news.map(item => {
-                    return (
-                        <Fragment key={item.href}>
-                            <NewsfeedItem data={item} />
-                            <hr />
-                        </Fragment>
-                    );
-                })}
-                <div className={style.moreButton} onClick={() => this.loadMore(news)}>Показать ещё</div>
-            </div>
-        );
-    }
+    return (
+        <div className={style.newsfeed}>
+            {news.map(item => {
+                return (
+                    <Fragment>
+                        <NewsfeedItem data={item} />
+                        <hr />
+                    </Fragment>
+                );
+            })}
+            <div className={style.moreButton} onClick={showMoreNews}>Показать ещё</div>
+        </div>
+    );
 }
 
 

@@ -21,23 +21,41 @@
 
 @font-face {
   font-family: "Geometria";
-  src: url("./assets/fonts/18194.otf") format("truetype");
+  src: url("./assets/fonts/Geometria.otf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Rostelecom Basis";
-  src: url("./assets/fonts/18111.otf") format("truetype");
+  font-family: "Rostelecom Basis Bold";
+  src: url("./assets/fonts/rostelecom-basis/RostelecomBasis-Bold.otf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Rostelecom Basis Medium";
+  src: url("./assets/fonts/rostelecom-basis/RostelecomBasis-Medium.otf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Rostelecom Basis Light";
+  src: url("./assets/fonts/rostelecom-basis/RostelecomBasis-Light.otf") format("truetype");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Ubuntu";
-  src: url("./assets/fonts/3976.ttf") format("truetype");
+  src: url("./assets/fonts/Ubuntu.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+}
+
+body {
+  background-color: #2f3333;
 }
 
 .app {
@@ -48,6 +66,7 @@
   margin: 0 auto;
   font-family: "Roboto Slab", sans-serif;
   font-size: 16px;
+  background-color: #262929;
 }
 
 .headerText {
@@ -56,6 +75,7 @@
   align-items: flex-start;
   margin: 80px 80px 0px 80px;
   flex-basis: 100%;
+  color: #fff0f0;
 }
 
 .charts {

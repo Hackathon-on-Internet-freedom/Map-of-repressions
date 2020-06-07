@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import { withRouter } from "react-router";
 import CasesBySocial from './CasesBySocialDetailed';
-import { getValuesFx } from '../../utils/effector';
+import { getValuesFx, setNewsData } from '../../utils/effector';
 
 class TileMap extends React.Component {
   constructor() {
@@ -44,6 +44,7 @@ class TileMap extends React.Component {
       majorDimension: 'ROWS'
     }).then(data => {
       data = this.sortDocsLenta(data)
+      setNewsData(data);
       this.setState({ docsLenta: data });
     })
   }
@@ -72,7 +73,7 @@ class TileMap extends React.Component {
         majorDimension: 'ROWS'
       }).then(data => {
         data = this.sortDocsLenta(data)
-        this.setState({ docsLenta: data });
+        setNewsData(data);
       })
     }
   }

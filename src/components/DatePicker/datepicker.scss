@@ -15,3 +15,7 @@
     box-sizing: border-box;
 
 }
+
+:global .react-datepicker-wrapper {
+    padding: 10px;
+}

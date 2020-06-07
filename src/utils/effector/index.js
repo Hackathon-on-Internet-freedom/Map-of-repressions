@@ -84,6 +84,7 @@ export const getDataFx = createEffect('get data').use(
     // console.log('data', data[0]);
 
     setRawData(data);
+    setNewsData(data);
   }
 );
 
@@ -140,9 +141,14 @@ export const setMapSettings = createEvent();
 export const mapSettings = createStore({})
   .on(setMapSettings, (state, data) => data);
 
-export const setRawData = createEvent();
-export const rawData = createStore([])
-  .on(setRawData, (state, data) => data);
+  export const setRawData = createEvent();
+  export const rawData = createStore([])
+    .on(setRawData, (state, data) => data);
+
+
+export const setNewsData = createEvent();
+export const newsData = createStore([])
+  .on(setNewsData, (state, data) => data);
 
 export const casesByDates = rawData.map(rows => {
   return rows.reduce((acc, row) => {

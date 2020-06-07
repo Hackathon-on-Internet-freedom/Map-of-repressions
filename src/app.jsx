@@ -50,6 +50,8 @@ const App = () => {
 
           <Route path="/:id">
             <DetailsRegion/>
+            <DatePicker />
+            <Newsfeed />
           </Route>
         </Switch>
       </div>

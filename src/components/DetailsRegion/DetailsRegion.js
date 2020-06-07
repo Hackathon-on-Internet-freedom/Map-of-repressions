@@ -30,7 +30,13 @@ class TileMap extends React.Component {
       dateTimeRenderOption: 'SERIAL_NUMBER',
       majorDimension: 'ROWS'
     }).then(data => {
-      this.setState({ docs: data[id] });
+      let returnedData = [];
+      for (let i = 0; i < data.length; i++) {
+        if (id === data[i][2]) {
+          returnedData = data[i];
+        }
+      }
+      this.setState({ docs: returnedData });
     })
     getValuesFx({
       range: 'LENTA!A1:J1038',
@@ -38,7 +44,6 @@ class TileMap extends React.Component {
       majorDimension: 'ROWS'
     }).then(data => {
       data = this.sortDocsLenta(data)
-      console.log(data)
       this.setState({ docsLenta: data });
     })
   }
@@ -53,7 +58,13 @@ class TileMap extends React.Component {
         dateTimeRenderOption: 'SERIAL_NUMBER',
         majorDimension: 'ROWS'
       }).then(data => {
-        this.setState({ docs: data[id] });
+        let returnedData = [];
+        for (let i = 0; i < data.length; i++) {
+          if (id === data[i][2]) {
+            returnedData = data[i];
+          }
+        }
+        this.setState({ docs: returnedData });
       })
       getValuesFx({
         range: 'LENTA!A1:J1038',

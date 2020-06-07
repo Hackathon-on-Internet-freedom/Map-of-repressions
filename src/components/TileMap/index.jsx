@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
+import moment from 'moment';
 
 import styles from './TileMap.scss';
 import {
@@ -20,6 +21,7 @@ import {
   toggleOrder
 } from './utils';
 import history from '../../utils/history';
+import { startDate, endDate } from '../DatePicker'
 
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
@@ -39,6 +41,12 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   }, []);
 
   const allData = useStore(rawData);
+  const startDateValue = useStore(startDate);
+  const endDateValue = useStore(endDate);
+  const dateRangedData = allData.filter(element => {
+    const date = moment(element[0], 'D.MM.YYYY').toDate();
+    return (date >= startDateValue && date <= endDateValue);
+  })
   const socialDataMap = useStore(dataBySocials);
   const socialKeys = useStore(casesBySocials);
   const settings = useStore(mapSettings);
@@ -56,16 +64,19 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const mapData = useMemo(
     () => {
       if (currentSocial === 'Все площадки') {
-        return allData;
+        return dateRangedData;
       } else if (currentSocial === socialKeys.fold.name) {
         return socialKeys.fold.items.reduce((acc, key) => {
           return acc.concat(socialDataMap[key]);
         }, []);
       }
 
-      return socialDataMap[currentSocial];
+      return socialDataMap[currentSocial].filter(element => {
+        const date = moment(element[0], 'D.MM.YYYY').toDate();
+        return (date >= startDateValue && date <= endDateValue);
+      });
     },
-    [allData, socialDataMap, socialKeys, currentSocial],
+    [dateRangedData, socialDataMap, socialKeys, currentSocial],
   );
 
   const data = useMemo(

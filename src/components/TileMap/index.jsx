@@ -167,6 +167,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         elements.style.opacity = 1;
         elements.style.left = d3.event.pageX + 10 + 'px';
         elements.style.top = d3.event.pageY + 'px';
+        elements.style.fill = '#949494'
         let elementRegion = document.getElementById('textRegion');
         elementRegion.textContent = d.region;
         let elementCount = document.getElementById('textCount');

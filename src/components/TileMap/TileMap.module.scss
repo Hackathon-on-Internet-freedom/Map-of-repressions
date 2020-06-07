@@ -21,8 +21,8 @@
 }
 
 .tile-map__tile {
-  stroke: #FFF;
-  stroke-width: 4;
+  stroke: #262929;
+  stroke-width: 3;
 }
 
 .tile-map__caption {
@@ -31,7 +31,7 @@
 }
 
 .tile-map__caption_val {
-  font: 30px sans-serif;
+  font: 28px sans-serif;
   fill: #FFFFFF;
 }
 
@@ -59,4 +59,17 @@
 }
 .tooltip div {
   margin-bottom: 6px;
+}
+
+.mapButton {
+  display: inline-block;
+  padding: 9.5px 30px;
+  background-color: #20b593;
+  margin: 5px 5px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  border-style: none;
 }

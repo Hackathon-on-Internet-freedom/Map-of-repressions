@@ -124,6 +124,11 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     return mapHeight * 0.5;
   }
 
+  function chooseTileColor(d) {
+    if (d.value === undefined) return '#777d7e'
+    return d.color
+  }
+
   const buildTileMap = () => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
@@ -146,7 +151,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
     tile
       .append('rect')
-      .style('fill', d => d.color)
+      .style('fill', d => chooseTileColor(d))
       .attr('width', tileWidth)
       .attr('height', tileHeight)
       .attr('x', d => calcX(d, maxColumns) * tileWidth)
@@ -213,35 +218,38 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     setSelectedSocial(e.target.value);
   };
 
+  const sortByFormatter = (o) => {
+    if (o === ORDER.desc) return 'убыванию';
+    return 'возрастанию';
+  }
+
   return (
     <div className={styles.root}>
       <div id="TileChart" />
 
       <div className={styles.controls}>
-        <button onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>
-          Sort by {view.order}
+        <button className={styles.mapButton} onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>
+          Сортировать по {sortByFormatter(view.order)}
         </button>
         {view.type === VIEW.tileChart && (
-          <button onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>
-            Map View
+          <button className={styles.mapButton} onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>
+            Карта
           </button>
         )}
-
         <select
           name="social"
           onChange={onChangeSocial}
-          value={currentSocial}
-        >
+          value={currentSocial}>
           {socials.map(social => (
             <option
               key={social}
-              value={social}
-            >
+              value={social}>
               {social}
             </option>
           ))}
         </select>
       </div>
+
 
       <div id='block' className={styles.tooltip}>
         <div id='textRegion' />
@@ -253,8 +261,8 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 };
 
 TileMap.defaultProps = {
-  mapHeight: 700,
-  mapWidth: 1400,
+  mapHeight: 600,
+  mapWidth: 1200,
 }
 
 export default TileMap;

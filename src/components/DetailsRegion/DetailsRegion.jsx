@@ -1,11 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import * as d3 from 'd3';
 import { withRouter } from "react-router";
 import CasesBySocial from './CasesBySocialDetailed';
 import { getValuesFx, setNewsData } from '../../utils/effector';
 
-class TileMap extends React.Component {
+class DetailsRegion extends React.Component {
   constructor() {
     super();
     this.state = {}
@@ -79,16 +77,15 @@ class TileMap extends React.Component {
   }
 
   render(){
-    if (this.state.docsLenta !== undefined) {
+    console.log(this.state)
+    if (this.state.docs !== undefined) {
       return (
         <div>
-          <ul>
-            <li>{this.state.docs[0]}</li>
-            <li>{this.state.docs[1]}</li>
-            <li>{this.state.docs[3]}</li>
-            <li>{this.state.docs[4]}</li>
-          </ul>
-          <CasesBySocial rawData={this.state.docsLenta}/>
+          <li>{this.state.docs[0]}</li>
+          <li>{this.state.docs[1]}</li>
+          <li>{this.state.docs[3]}</li>
+          <li>{this.state.docs[4]}</li>
+          <CasesBySocial rawData={this.state.docs}/>
         </div>
       );
     } else {
@@ -99,4 +96,4 @@ class TileMap extends React.Component {
   }
 }
 
-export default withRouter(TileMap);
+export default withRouter(DetailsRegion);

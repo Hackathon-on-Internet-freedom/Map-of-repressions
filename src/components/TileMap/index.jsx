@@ -111,6 +111,11 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     return Math.floor(d.rank / mC);
   }
 
+  function calcMapHeight() {
+    if (view.type === VIEW.map) return mapHeight;
+    return mapHeight * 0.5;
+  }
+
   const buildTileMap = () => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
@@ -120,7 +125,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
     d3.select('#TileChart').selectAll('*').remove();
     const svg = d3.select('#TileChart').append('svg');
-    svg.attr('width', mapWidth).attr('height', mapHeight);
+    svg.attr('width', mapWidth).attr('height', calcMapHeight());
     svg.append('g').attr('id', 'tileArea');
 
     const tile = svg

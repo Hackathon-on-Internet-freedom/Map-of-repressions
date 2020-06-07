@@ -15,6 +15,7 @@ import MonthGraph from './components/MonthGraph';
 import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 import Newsfeed from './components/Newsfeed';
+import DatePicker from './components/DatePicker';
 import Statistic from './components/Statistic';
 import DetailsRegion from './components/DetailsRegion/DetailsRegion';
 import GraphCasesPerMonth from './components/GraphCasesPerMonth';
@@ -43,6 +44,7 @@ const App = () => {
               <DiagramCasesPer100Thousand />
               <CasesBySocial />
             </div>
+            <DatePicker />
             <Newsfeed />
           </Route>
 

@@ -7,7 +7,7 @@ import HorizontalBarChart from '../basis/HorizontalBarChart';
 function sortData(rawData) {
   let data = {}
   let returnedData = []
-  for (let i = 1; i < rawData.length-1; i++) {
+  for (let i = 0; i < rawData.length; i++) {
     console.log(data, rawData[i][6])
     if (data[rawData[i][6]]) {
       data[rawData[i][6]] += 1;

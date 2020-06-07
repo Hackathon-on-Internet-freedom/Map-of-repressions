@@ -4,7 +4,7 @@ import ReactDatePicker, { registerLocale, setDefaultLocale } from 'react-datepic
 import ru from 'date-fns/locale/ru';
 import './react-datepicker.css';
 import './datepicker.scss';
-import styleButton from './styleButton.scss';
+import styleButton from './styleButton.module.scss';
 
 
 import { createEvent, createStore } from 'effector';

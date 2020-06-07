@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStore } from 'effector-react';
 import * as d3 from 'd3';
 
-import style from './MonthGraph.scss';
+import style from './MonthGraph.module.scss';
 import { casesByMonths, casesByYears } from '../../utils/effector';
 
 const TITLES = {
@@ -177,7 +177,7 @@ const MonthGraph = () => {
     } else {
       renderBarChart();
     }
-  }, [type, rawMonthData, rawYearData])
+  }, [type, data, renderLineChart, renderBarChart])
 
   const onClick = () => {
     setType(type === 'month' ? 'year' : 'month');

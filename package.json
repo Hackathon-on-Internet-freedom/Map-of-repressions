@@ -1,68 +1,48 @@
 {
-  "name": "react-starter-test-2",
-  "version": "1.0.0",
-  "main": "index.jsx",
+  "name": "map-of-repressions",
+  "version": "0.1.0",
   "license": "MIT",
-  "scripts": {
-    "build": "yarn clean; webpack --config config/webpack-prod-config.js",
-    "test": "jest",
-    "clean": "rm -rf build/*",
-    "check-staged": "lint-staged",
-    "start:dev": "node config/webpack-dev-server.js",
-    "start:prod": "yarn build; serve build"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.10.2",
-    "@babel/plugin-proposal-class-properties": "^7.10.1",
-    "@babel/plugin-transform-regenerator": "^7.10.1",
-    "@babel/plugin-transform-runtime": "^7.10.1",
-    "@babel/polyfill": "^7.10.1",
-    "@babel/preset-env": "^7.10.2",
-    "@babel/preset-react": "^7.10.1",
-    "@hot-loader/react-dom": "^16.13.0",
-    "@jest/globals": "^26.0.1",
-    "axios-mock-adapter": "^1.18.1",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^3.5.3",
-    "extract-text-webpack-plugin": "^3.0.2",
-    "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^4.3.0",
-    "husky": "^4.2.5",
-    "jest": "^26.0.1",
-    "lint-staged": "^10.2.9",
-    "serve": "^11.3.2",
-    "style-loader": "^1.2.1",
-    "uglifyjs-webpack-plugin": "^2.2.0",
-    "webpack": "^4.43.0",
-    "webpack-command": "^0.5.0",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^4.2.2"
-  },
   "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "d3": "^5.16.0",
-    "effector": "^20.15.8",
+    "effector": "^20.15.9",
     "effector-react": "^20.7.3",
-    "googleapis": "^52.1.0",
     "gradstop": "^2.2.3",
     "moment": "^2.26.0",
-    "prop-types": "^15.7.2",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-datepicker": "^3.0.0",
     "react-dom": "^16.13.1",
-    "react-hot-loader": "^4.12.21",
     "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
     "react-use": "^15.1.1",
     "recharts": "^1.8.5"
   },
-  "jest": {
-    "rootDir": "./src",
-    "moduleFileExtensions": [
-      "js",
-      "jsx"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "moduleDirectories": [
-      "node_modules"
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "axios-mock-adapter": "^1.18.1"
   }
 }

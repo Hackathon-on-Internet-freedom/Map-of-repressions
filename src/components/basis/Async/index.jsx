@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Async.scss';
+import style from './Async.module.scss';
 
 const Async = ({ loading, error, className, children }) => {
   const resolvedClassName = [className, style.async].join(' ');

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import moment from 'moment';
 
-import styles from './TileMap.scss';
+import styles from './TileMap.module.scss';
 import {
   casesBySocials,
   colorSchema,
@@ -106,9 +106,6 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   );
 
   const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
-  useEffect(() => {
-    if (data) buildTileMap();
-  }, [view, data]);
 
   const calcX = (d, mC) => {
     if (view.type === VIEW.map) return d.col;
@@ -203,6 +200,10 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
     return svg;
   };
+
+  useEffect(() => {
+    if (data) buildTileMap();
+  }, [view, data, buildTileMap]);
 
   if (!data.length) {
     return 'Загрузка...';

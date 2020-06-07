@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './Statistic.scss';
+import style from './Statistic.module.scss';
 import Async from '../basis/Async';
 import { useTable } from '../../hooks';
 

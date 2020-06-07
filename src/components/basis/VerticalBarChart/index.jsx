@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, LabelList } from 'recharts';
-import style from './VerticalBarChart.scss';
+import style from './VerticalBarChart.module.scss';
 
 const VerticalBarChart = (props) => {
   return (

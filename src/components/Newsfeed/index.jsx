@@ -3,7 +3,7 @@ import NewsfeedItem from './NewsfeedItem';
 import api from '../../api';
 import moment from 'moment';
 
-import style from './newsfeed.scss';
+import style from './newsfeed.module.scss';
 import { startDate, endDate } from '../DatePicker'
 
 import { newsData } from '../../utils/effector';

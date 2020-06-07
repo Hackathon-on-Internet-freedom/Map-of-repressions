@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
-import { hot } from 'react-hot-loader';
 import {
   Router,
   Switch,
   Route
 } from "react-router-dom";
 
-import style from './app.css';
+import style from './app.module.scss';
 import { getDataFx } from './utils/effector';
 import history from "./utils/history";
 
@@ -59,4 +58,4 @@ const App = () => {
   );
 };
 
-export default hot(module)(App);
+export default App;

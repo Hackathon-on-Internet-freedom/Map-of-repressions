@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import style from './DiagramCasesPer100Thousand.scss';
+import style from './DiagramCasesPer100Thousand.module.scss';
 import { getValuesFx } from '../../utils/effector';
 import HorizontalBarChart from '../basis/HorizontalBarChart';
 

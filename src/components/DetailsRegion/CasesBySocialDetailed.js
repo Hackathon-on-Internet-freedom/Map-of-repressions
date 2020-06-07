@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import style from './CasesBySocial.scss';
+import style from './CasesBySocial.module.scss';
 
 import HorizontalBarChart from '../basis/HorizontalBarChart';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { BarChart, XAxis, YAxis, Tooltip, Bar, LabelList } from 'recharts';
 import utils from '../../../utils';
-import style from './HorizontalBarChart.scss';
+import style from './HorizontalBarChart.module.scss';
 
 const HorizontalBarChart = (props) => {
   return (

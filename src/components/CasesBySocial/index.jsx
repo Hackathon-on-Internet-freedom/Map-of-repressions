@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStore } from 'effector-react';
 
-import style from './CasesBySocial.scss';
+import style from './CasesBySocial.module.scss';
 import { casesBySocials } from '../../utils/effector';
 
 import HorizontalBarChart from '../basis/HorizontalBarChart';

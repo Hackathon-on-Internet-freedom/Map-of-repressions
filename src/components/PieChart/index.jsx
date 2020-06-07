@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 import GenericChart from '../GenericChart';
-import * as styles from './PieChart.scss';
+import styles from './PieChart.module.scss';
 
 const PieChart = ({ data, width, height, id }) => {
   const buildPieChart = (data, chartHeight, chartWidth, svg) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import Graph from '../basis/Graph';
 import { useStore } from 'effector-react';
 import { casesByMonths } from '../../utils/effector';
-import style from './GraphCasesPerMonth.scss';
+import style from './GraphCasesPerMonth.module.scss';
 
 const GraphCasesPerMonth = () => {
   const rawMonthData = useStore(casesByMonths);

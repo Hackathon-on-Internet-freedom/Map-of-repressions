@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './newsfeedItem.scss';
+import style from './newsfeedItem.module.scss';
 
 const NewsfeedItem = ({ data }) => {
   return (

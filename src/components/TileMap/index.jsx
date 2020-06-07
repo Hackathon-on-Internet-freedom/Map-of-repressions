@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import * as d3 from 'd3';
 import moment from 'moment';
 
@@ -25,6 +25,11 @@ import { startDate, endDate } from '../DatePicker'
 
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
+
+function chooseTileColor(d) {
+  if (d.value === undefined) return '#777d7e'
+  return d.color
+}
 
 const TileMap = ({ mapWidth, mapHeight }) => {
   useEffect(() => {
@@ -58,7 +63,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
       'Все площадки',
       ...socialKeys.data.map(({ name }) => name),
     ]),
-    [socialKeys],
+    [socialKeys.data],
   );
 
   const mapData = useMemo(
@@ -76,7 +81,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         return (date >= startDateValue && date <= endDateValue);
       });
     },
-    [dateRangedData, socialDataMap, socialKeys, currentSocial],
+    [dateRangedData, socialDataMap, socialKeys.fold, currentSocial, startDateValue, endDateValue],
   );
 
   const data = useMemo(
@@ -107,29 +112,37 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
   const [view, setView] = useState({type: VIEW.map, order: ORDER.desc});
 
-  const calcX = (d, mC) => {
-    if (view.type === VIEW.map) return d.col;
-    if (view.order === ORDER.desc) return (numOfRegions - 1 - d.rank) % mC;
-    return d.rank % mC;
-  }
+  const calcX = useCallback(
+    (d, mC) => {
+      if (view.type === VIEW.map) return d.col;
+      if (view.order === ORDER.desc) return (numOfRegions - 1 - d.rank) % mC;
+      return d.rank % mC;
+    },
+    [view, numOfRegions],
+  );
 
-  const calcY = (d, mC) => {
-    if (view.type === VIEW.map) return d.row;
-    if (view.order === ORDER.desc) return Math.floor((numOfRegions - 1 - d.rank) / mC);
-    return Math.floor(d.rank / mC);
-  }
+  const calcY = useCallback(
+    (d, mC) => {
+      if (view.type === VIEW.map) return d.row;
+      if (view.order === ORDER.desc) return Math.floor((numOfRegions - 1 - d.rank) / mC);
+      return Math.floor(d.rank / mC);
+    },
+    [view, numOfRegions],
+  );
 
-  function calcMapHeight() {
-    if (view.type === VIEW.map) return mapHeight;
-    return mapHeight * 0.5;
-  }
+  const calcMapHeight = useCallback(
+    () => {
+      if (view.type === VIEW.map) return mapHeight;
+      return mapHeight * 0.5;
+    },
+    [view.type, mapHeight],
+  );
 
-  function chooseTileColor(d) {
-    if (d.value === undefined) return '#777d7e'
-    return d.color
-  }
+  useEffect(() => {
+    if (!data || !data.length) {
+      return;
+    }
 
-  const buildTileMap = () => {
     const maxColumns = d3.max(data, d => parseInt(d.col, 10));
     const maxRows = d3.max(data, d => parseInt(d.row, 10));
 
@@ -202,13 +215,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         history.push('/' + path);
       })
       .classed(styles['tile-map__tile-wrapper'], true);
-
-    return svg;
-  };
-
-  useEffect(() => {
-    if (data) buildTileMap();
-  }, [view, data, buildTileMap]);
+  }, [view, data, calcMapHeight, calcX, calcY, mapHeight, mapWidth]);
 
   if (!data.length) {
     return 'Загрузка...';

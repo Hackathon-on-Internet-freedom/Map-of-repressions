@@ -5,12 +5,10 @@ import { getValuesFx, setNewsData } from '../../utils/effector';
 import styles from './DetailsRegion.module.scss';
 
 class DetailsRegion extends React.Component {
-  constructor() {
-    super();
-    this.state = {}
-    this.state.docs = ['Загрузка', 'Загрузка', 'Загрузка', 'Загрузка'];
-    this.state.path = '/'
-  }
+  state = {
+    docs: ['Загрузка', 'Загрузка', 'Загрузка', 'Загрузка'],
+    path: '/',
+  };
 
   sortDocsLenta = (data) => {
     let sortedArray = []
@@ -51,8 +49,10 @@ class DetailsRegion extends React.Component {
   componentDidUpdate() {
     const {id} = this.props.match.params;
     if (this.props.location.pathname !== this.state.path) {
-      this.state.path = this.props.location.pathname;
-      this.state.docs = ['Загрузка', 'Загрузка', 'Загрузка', 'Загрузка'];
+      this.setState({
+        docs: ['Загрузка', 'Загрузка', 'Загрузка', 'Загрузка'],
+        path: this.props.location.pathname,
+      });
       getValuesFx({
         range: 'Stat!A1:E86',
         dateTimeRenderOption: 'SERIAL_NUMBER',

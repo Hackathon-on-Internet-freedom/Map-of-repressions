@@ -17,12 +17,12 @@ const CasesBySocial = () => {
   const sum = data.reduce((memo, d) => {
     return memo + d.value;
   }, 0);
-  
+
   const renderCustomizedLabel = (props) => {
-    const { x, y, width, height, value } = props;
+    const { x, y, width, value } = props;
     const yOffset = 15;
     const xOffset = 10;
-  
+
     return (
       <g>
         <text
@@ -38,7 +38,6 @@ const CasesBySocial = () => {
       </g>
     );
   };
-
 
   return (
     <div className={style.root}>

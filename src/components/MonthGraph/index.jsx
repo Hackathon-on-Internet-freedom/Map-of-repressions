@@ -34,156 +34,160 @@ const MonthGraph = () => {
   const rawMonthData = useStore(casesByMonths);
   const rawYearData = useStore(casesByYears);
 
-  const data = useMemo(
+  const dataLength = useMemo(
     () => {
       if (type === 'month') {
-        return getMonthData(rawMonthData);
+        return Object.keys(rawMonthData).length;
       } else {
-        return getYearData(rawYearData);
+        return Object.keys(rawYearData).length;
       }
     },
     [type, rawMonthData, rawYearData],
   );
 
-  const renderLineChart = () => {
-    const chartData = JSON.parse(JSON.stringify(data))
-      // stringify fix
-      .map(row => ({ ...row, date: new Date(row.date) }));
-    const margin = { top: 30, right: 40, bottom: 30, left: 40 };
-    const height = 500;
-    const width = 1000;
-    const svg = d3
-      .select('#mapContentChart')
-      .append('svg')
-      .attr('viewBox', [0, 0, width, height]);
+  useEffect(
+    () => {
+      if (type !== 'month') {
+        return;
+      }
 
-    const x = d3.scaleUtc()
-      .domain(d3.extent(chartData, d => d.date))
-      .range([margin.left, width - margin.right])
+      const container = document.getElementById('mapContentChart');
+      if (container) {
+        container.innerHTML = '';
+      }
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(chartData, d => d.value)]).nice()
-      .range([height - margin.bottom, margin.top])
+      const chartData = getMonthData(rawMonthData);
+      const margin = { top: 30, right: 40, bottom: 30, left: 40 };
+      const height = 500;
+      const width = 1000;
+      const svg = d3
+        .select('#mapContentChart')
+        .append('svg')
+        .attr('viewBox', [0, 0, width, height]);
 
-    const xAxis = g => g
-      .attr("transform", `translate(0,${height - margin.bottom})`)
-      .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+      const x = d3.scaleUtc()
+        .domain(d3.extent(chartData, d => d.date))
+        .range([margin.left, width - margin.right])
 
-    const yAxis = g => g
-      .attr("transform", `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y))
-      .call(g => g.select(".domain").remove())
-      .call(g => g.select(".tick:last-of-type text").clone()
-        .attr("x", 3)
-        .attr("text-anchor", "start")
-        .attr("font-weight", "bold")
-        .text(chartData.y))
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(chartData, d => d.value)]).nice()
+        .range([height - margin.bottom, margin.top])
 
-    const line = d3.line()
-      .defined(d => !isNaN(d.value))
-      .x(d => x(d.date))
-      .y(d => y(d.value))
+      const xAxis = g => g
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
 
-    svg.append("g")
-      .call(xAxis);
+      const yAxis = g => g
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y))
+        .call(g => g.select(".domain").remove())
+        .call(g => g.select(".tick:last-of-type text").clone()
+          .attr("x", 3)
+          .attr("text-anchor", "start")
+          .attr("font-weight", "bold")
+          .text(chartData.y))
 
-    svg.append("g")
-      .call(yAxis);
+      const line = d3.line()
+        .defined(d => !isNaN(d.value))
+        .x(d => x(d.date))
+        .y(d => y(d.value))
 
-    svg.append("path")
-      .datum(chartData)
-      .attr("fill", "none")
-      .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .attr("d", line);
+      svg.append("g")
+        .call(xAxis);
 
-    return svg;
-  };
+      svg.append("g")
+        .call(yAxis);
 
-  const renderBarChart = () => {
-    // this.data = this.arrayBarFormat()
-    const chartData = JSON.parse(JSON.stringify(data));
-    const margin = { top: 30, right: 40, bottom: 30, left: 40 };
-    const height = 500;
-    const width = 1000;
-    const svg = d3
-      .select('#mapContentChart')
-      .append('svg')
-      .attr('viewBox', [0, 0, width, height]);
+      svg.append("path")
+        .datum(chartData)
+        .attr("fill", "none")
+        .attr("stroke", "steelblue")
+        .attr("stroke-width", 1.5)
+        .attr("stroke-linejoin", "round")
+        .attr("stroke-linecap", "round")
+        .attr("d", line);
+    },
+    [type, rawMonthData],
+  );
 
-    const x = d3
-      .scaleBand()
-      .domain(d3.range(chartData.length))
-      .range([margin.left, width - margin.right])
-      .padding(0.1);
+  useEffect(
+    () => {
+      if (type !== 'year') {
+        return;
+      }
 
-    const y = d3
-      .scaleLinear()
-      .domain([0, d3.max(chartData, d => d.value)])
-      .nice()
-      .range([height - margin.bottom, margin.top]);
+      const container = document.getElementById('mapContentChart');
+      if (container) {
+        container.innerHTML = '';
+      }
 
-    const xAxis = g =>
-      g.attr('transform', `translate(0,${height - margin.bottom})`).call(
-        d3
-          .axisBottom(x)
-          .tickFormat(i => chartData[i].name)
-          .tickSizeOuter(0),
-      );
+      const chartData = getYearData(rawYearData);
+      const margin = { top: 30, right: 40, bottom: 30, left: 40 };
+      const height = 500;
+      const width = 1000;
+      const svg = d3
+        .select('#mapContentChart')
+        .append('svg')
+        .attr('viewBox', [0, 0, width, height]);
 
-    const yAxis = g =>
-      g
-        .attr('transform', `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y).ticks(null, chartData.format))
-        .call(g => g.select('.domain').remove())
-        .call(g =>
-          g
-            .append('text')
-            .attr('x', -margin.left)
-            .attr('y', 10)
-            .attr('fill', 'currentColor')
-            .attr('text-anchor', 'start')
-            .text(chartData.y),
+      const x = d3
+        .scaleBand()
+        .domain(d3.range(chartData.length))
+        .range([margin.left, width - margin.right])
+        .padding(0.1);
+
+      const y = d3
+        .scaleLinear()
+        .domain([0, d3.max(chartData, d => d.value)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+      const xAxis = g =>
+        g.attr('transform', `translate(0,${height - margin.bottom})`).call(
+          d3
+            .axisBottom(x)
+            .tickFormat(i => chartData[i].name)
+            .tickSizeOuter(0),
         );
 
-    svg
-      .append('g')
-      .attr('fill', 'steelblue')
-      .selectAll('rect')
-      .data(chartData)
-      .join('rect')
-      .attr('x', (d, i) => x(i))
-      .attr('y', d => y(d.value))
-      .attr('height', d => y(0) - y(d.value))
-      .attr('width', x.bandwidth());
+      const yAxis = g =>
+        g
+          .attr('transform', `translate(${margin.left},0)`)
+          .call(d3.axisLeft(y).ticks(null, chartData.format))
+          .call(g => g.select('.domain').remove())
+          .call(g =>
+            g
+              .append('text')
+              .attr('x', -margin.left)
+              .attr('y', 10)
+              .attr('fill', 'currentColor')
+              .attr('text-anchor', 'start')
+              .text(chartData.y),
+          );
 
-    svg.append('g').call(xAxis);
+      svg
+        .append('g')
+        .attr('fill', 'steelblue')
+        .selectAll('rect')
+        .data(chartData)
+        .join('rect')
+        .attr('x', (d, i) => x(i))
+        .attr('y', d => y(d.value))
+        .attr('height', d => y(0) - y(d.value))
+        .attr('width', x.bandwidth());
 
-    svg.append('g').call(yAxis);
+      svg.append('g').call(xAxis);
 
-    return svg;
-  };
-
-  useEffect(() => {
-    const container = document.getElementById('mapContentChart');
-    if (container) {
-      container.innerHTML = '';
-    }
-
-    if (type === 'month') {
-      renderLineChart();
-    } else {
-      renderBarChart();
-    }
-  }, [type, data, renderLineChart, renderBarChart])
+      svg.append('g').call(yAxis);
+    },
+    [type, rawYearData],
+  );
 
   const onClick = () => {
     setType(type === 'month' ? 'year' : 'month');
   };
 
-  if (data.length < 2) {
+  if (dataLength < 2) {
     return 'Загрузка...';
   }
 

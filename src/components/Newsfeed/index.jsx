@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import NewsfeedItem from './NewsfeedItem';
-import api from '../../api';
 import moment from 'moment';
 
 import style from './newsfeed.module.scss';
@@ -8,7 +7,7 @@ import { startDate, endDate } from '../DatePicker'
 
 import { newsData } from '../../utils/effector';
 
-import { createEvent, createStore, createEffect } from 'effector';
+import { createEvent, createStore } from 'effector';
 import { useStore } from 'effector-react'
 
 const showMoreNews = createEvent('show-more-news');
@@ -45,14 +44,12 @@ const Newsfeed = () => {
 
     return (
         <div className={style.newsfeed}>
-            {news.map(item => {
-                return (
-                    <Fragment>
-                        <NewsfeedItem data={item} />
-                        <hr />
-                    </Fragment>
-                );
-            })}
+            {news.map(item => (
+                <Fragment key={`${item.title}_${item.href}`}>
+                    <NewsfeedItem data={item} />
+                    <hr />
+                </Fragment>
+            ))}
             <div className={style.moreButton} onClick={showMoreNews}>Показать ещё</div>
         </div>
     );

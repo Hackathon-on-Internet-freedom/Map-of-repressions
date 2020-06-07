@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import style from './DiagramCasesPer100Thousand.module.scss';
 import { getValuesFx } from '../../utils/effector';
-import HorizontalBarChart from '../basis/HorizontalBarChart';
+import VerticalBarChart from '../basis/VerticalBarChart';
 
 function DiagramCasesPer100Thousand() {
   const [data, setData] = useState();
@@ -19,13 +19,25 @@ function DiagramCasesPer100Thousand() {
 
   return (
     <div className={style.root}>
-      <HorizontalBarChart
+      <VerticalBarChart
+        height="85%"
+        hideLabelList
         header="Кол-во дел на 100 тыс. населения"
-        width={500}
-        height={1200}
         data={data}
+        tooltipProps={{
+          cursor: false,
+          position: { y: 150, x: 500 },
+          contentStyle: { background: 'transparent' },
+          wrapperStyle: { width: '300px', height: '400px', border: 'none' }
+        }}
+        barProps={{
+          fill: '#af788d',
+        }}
         yAxisProps={{
-          width: 260
+          hide: true
+        }}
+        xAxisProps={{
+          hide: true
         }}
       />
     </div>

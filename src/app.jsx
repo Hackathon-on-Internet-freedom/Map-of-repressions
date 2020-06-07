@@ -11,15 +11,13 @@ import { getDataFx } from './utils/effector';
 import history from "./utils/history";
 
 import TileMap from './components/TileMap';
-import MonthGraph from './components/MonthGraph';
-import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 import CasesBySocial from './components/CasesBySocial';
 import Newsfeed from './components/Newsfeed';
 import DatePicker from './components/DatePicker';
 import Statistic from './components/Statistic';
 import DetailsRegion from './components/DetailsRegion/DetailsRegion';
-import GraphCasesPerMonth from './components/GraphCasesPerMonth';
-import DiagramCasesPerYear from './components/DiagramCasesPerYear';
+import DiagramCasesSwitcher from './components/DiagramCasesSwitcher';
+import DiagramCasesPer100Thousand from './components/DiagramCasesPer100Thousand';
 
 const App = () => {
   useEffect(() => {
@@ -37,13 +35,11 @@ const App = () => {
 
         <Switch>
           <Route exact path="/">
-            <GraphCasesPerMonth />
-            <DiagramCasesPerYear />
             <div className={style.charts}>
-              <MonthGraph />
-              <DiagramCasesPer100Thousand />
               <CasesBySocial />
             </div>
+            <DiagramCasesPer100Thousand />
+            <DiagramCasesSwitcher />
             <DatePicker />
             <Newsfeed />
           </Route>

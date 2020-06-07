@@ -8,23 +8,22 @@ function sortData(rawData) {
   let data = {}
   let returnedData = []
   for (let i = 1; i < rawData.length-1; i++) {
-    if (data[rawData[6]]) {
-      data[rawData[6]] += 1;
+    console.log(data, rawData[i][6])
+    if (data[rawData[i][6]]) {
+      data[rawData[i][6]] += 1;
     } else {
-      data[rawData[6]] = 1;
+      data[rawData[i][6]] = 1;
     }
   }
   Object.keys(data).forEach(function(key) {
     returnedData.push({name: key, value: data[key]})
   });
-  console.log('GGGGGG', returnedData)
   return returnedData
 }
 
-const CasesBySocial = (rawData) => {
-  console.log(rawData)
-  const [data, setData] = useState(false);
-  setData(sortData(rawData))
+const CasesBySocial = (props) => {
+  //const [data, setData] = useState(false);
+  let data = sortData(props.rawData)
 
   if (!data) {
     return 'Загрузка...';

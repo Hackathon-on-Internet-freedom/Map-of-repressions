@@ -178,7 +178,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
       .on('click', (d) => {
         setSelectedTile(d[MAP_ID_KEY]);
         const path = selectedTile.getState()
-          ? data.id_reg
+          ? data.indexOf(d)
           : '';
         history.push('/' + path);
       })

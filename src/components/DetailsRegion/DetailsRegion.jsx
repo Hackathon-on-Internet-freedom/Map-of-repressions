@@ -72,13 +72,14 @@ class DetailsRegion extends React.Component {
         majorDimension: 'ROWS'
       }).then(data => {
         data = this.sortDocsLenta(data)
+        this.setState({ docsLenta: data });
         setNewsData(data);
       })
     }
   }
 
   render(){
-    if (this.state.docs !== undefined) {
+    if (this.state.docsLenta !== undefined) {
       return (
         <div>
           <div>
@@ -101,7 +102,7 @@ class DetailsRegion extends React.Component {
             </div>
           </div>
           <div className={styles.caseBySocialBlock}>
-            <CasesBySocial rawData={this.state.docs}/>
+            <CasesBySocial rawData={this.state.docsLenta}/>
           </div>
         </div>
       );

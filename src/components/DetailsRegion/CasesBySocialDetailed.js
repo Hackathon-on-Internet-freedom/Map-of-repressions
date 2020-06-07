@@ -8,7 +8,6 @@ function sortData(rawData) {
   let data = {}
   let returnedData = []
   for (let i = 0; i < rawData.length; i++) {
-    console.log(data, rawData[i][6])
     if (data[rawData[i][6]]) {
       data[rawData[i][6]] += 1;
     } else {
@@ -18,10 +17,12 @@ function sortData(rawData) {
   Object.keys(data).forEach(function(key) {
     returnedData.push({name: key, value: data[key]})
   });
+  returnedData.sort((a, b) => {return -(a.value-b.value)})
   return returnedData
 }
 
 const CasesBySocial = (props) => {
+  console.log('HELP', props)
   //const [data, setData] = useState(false);
   let data = sortData(props.rawData)
 
@@ -37,7 +38,7 @@ const CasesBySocial = (props) => {
         width={500}
         data={data}
         yAxisProps={{
-          width: 160
+          width: 220
         }}
       />
     </div>

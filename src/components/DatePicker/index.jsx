@@ -4,6 +4,7 @@ import ReactDatePicker, { registerLocale, setDefaultLocale } from 'react-datepic
 import ru from 'date-fns/locale/ru';
 import './react-datepicker.css';
 import './datepicker.scss';
+import styleButton from './styleButton.scss';
 
 
 import { createEvent, createStore } from 'effector';
@@ -47,6 +48,8 @@ const DatePicker = () => {
         onChange={endDateChange}
         locale="ru"
       />
+      <div className={styleButton.reset} onClick={()=>{startDateChange(new Date(2015, 0, 1)); endDateChange(new Date());}}>Сбросить</div>
+
     </div>
   );
 }

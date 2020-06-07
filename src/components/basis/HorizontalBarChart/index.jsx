@@ -1,12 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { BarChart, XAxis, YAxis, Tooltip, Bar } from 'recharts';
-import utils from '../../utils';
+import { BarChart, XAxis, YAxis, Tooltip, Bar, LabelList } from 'recharts';
+import utils from '../../../utils';
 import style from './HorizontalBarChart.scss';
 
 const HorizontalBarChart = (props) => {
-  const data = props.data.sort((a, b) => b.value - a.value);
-
   return (
     <>
       <div className={style.header}>{props.header}</div>
@@ -14,7 +12,7 @@ const HorizontalBarChart = (props) => {
         width={props.width}
         height={props.height}
         layout="vertical"
-        data={data}
+        data={props.data}
       >
         <XAxis
           hide
@@ -27,12 +25,22 @@ const HorizontalBarChart = (props) => {
           interval={0}
           tickLine={false}
           axisLine={false}
-          tick={{ fontSize: 16 }}
+          tick={{
+            fontFamily: "'Rostelecom Basis Light', sans-serif",
+            fontSize: 16,
+            fill: '#c7c7c7'
+          }}
           tickFormatter={(value) => utils.limitStringLength(value, 33)}
           {...props.yAxisProps}
         />
         <Tooltip formatter={(value) => [value, ""] } separator="" />
-        <Bar dataKey="value" fill="#166600" {...props.barProps}  />
+        <Bar dataKey="value" fill="#166600" {...props.barProps}>
+          <LabelList
+            dataKey="value"
+            position="right"
+            {...props.labelListProps}
+          />
+        </Bar>
       </BarChart>
     </>
   )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import style from './DiagramCasesPer100Thousand.scss';
 import { getValuesFx } from '../../utils/effector';
-import HorizontalBarChart from '../HorizontalBarChart';
+import HorizontalBarChart from '../basis/HorizontalBarChart';
 
 function DiagramCasesPer100Thousand() {
   const [data, setData] = useState();

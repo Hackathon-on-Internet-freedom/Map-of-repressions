@@ -17,6 +17,8 @@ import CasesBySocial from './components/CasesBySocial';
 import Newsfeed from './components/Newsfeed';
 import Statistic from './components/Statistic';
 import DetailsRegion from './components/DetailsRegion/DetailsRegion';
+import GraphCasesPerMonth from './components/GraphCasesPerMonth';
+import DiagramCasesPerYear from './components/DiagramCasesPerYear';
 
 const App = () => {
   useEffect(() => {
@@ -34,6 +36,8 @@ const App = () => {
 
         <Switch>
           <Route exact path="/">
+            <GraphCasesPerMonth />
+            <DiagramCasesPerYear />
             <div className={style.charts}>
               <MonthGraph />
               <DiagramCasesPer100Thousand />

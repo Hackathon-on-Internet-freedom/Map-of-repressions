@@ -22,7 +22,7 @@ const Newsfeed = () => {
     const range = useStore(selectedNewsRange);
     const start = useStore(startDate);
     const end = useStore(endDate);
-
+    console.log("" + start + " " + end);
     let news = useStore(newsData);
 
     news = news
@@ -35,11 +35,13 @@ const Newsfeed = () => {
             digest: element[9],
             source: element[5]
         }))
-        .slice(0, range)
         .filter(e => {
             const date = moment(e.date, 'D.MM.YYYY').toDate();
             return (date >= start && date <= end);
         })
+        .slice(0, range);
+    console.log(news);
+
 
     return (
         <div className={style.newsfeed}>

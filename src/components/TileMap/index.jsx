@@ -71,7 +71,10 @@ const TileMap = ({ mapWidth, mapHeight }) => {
         }, []);
       }
 
-      return socialDataMap[currentSocial];
+      return socialDataMap[currentSocial].filter(element => {
+        const date = moment(element[0], 'D.MM.YYYY').toDate();
+        return (date >= startDateValue && date <= endDateValue);
+      });
     },
     [dateRangedData, socialDataMap, socialKeys, currentSocial],
   );

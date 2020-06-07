@@ -141,10 +141,9 @@ export const setMapSettings = createEvent();
 export const mapSettings = createStore({})
   .on(setMapSettings, (state, data) => data);
 
-  export const setRawData = createEvent();
-  export const rawData = createStore([])
-    .on(setRawData, (state, data) => data);
-
+export const setRawData = createEvent();
+export const rawData = createStore([])
+  .on(setRawData, (state, data) => data);
 
 export const setNewsData = createEvent();
 export const newsData = createStore([])

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import style from './CasesBySocial.module.scss';
 
@@ -22,9 +22,10 @@ function sortData(rawData) {
 }
 
 const CasesBySocial = (props) => {
-  console.log('HELP', props)
-  //const [data, setData] = useState(false);
-  let data = sortData(props.rawData)
+  const data = useMemo(
+    () => sortData(props.rawData),
+    [props.rawData],
+  );
 
   if (!data) {
     return 'Загрузка...';

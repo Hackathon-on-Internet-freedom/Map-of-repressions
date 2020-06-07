@@ -10,8 +10,12 @@ const DiagramCasesSwticher = () => {
     <div className={style.container}>
       <div className={style.header}>
         <div className={style.headerText}>Динамика дел</div>
-        <button className={style.button} onClick={() => setIsPerYear(true)}>по годам</button>
-        <button className={style.button} onClick={() => setIsPerYear(false)}>по месяцам</button>
+
+        {
+          isPerYear
+          ? <button className={style.button} onClick={() => setIsPerYear(false)}>по месяцам</button>
+          : <button className={style.button} onClick={() => setIsPerYear(true)}>по годам</button>
+        }
       </div>
       {
         isPerYear

@@ -61,23 +61,29 @@ class TileMap extends React.Component {
         majorDimension: 'ROWS'
       }).then(data => {
         data = this.sortDocsLenta(data)
-        console.log(data)
         this.setState({ docsLenta: data });
       })
     }
   }
 
   render(){
-    return (
-      <div>
-        <ul>
-          <li>{this.state.docs[0]}</li>
-          <li>{this.state.docs[1]}</li>
-          <li>{this.state.docs[3]}</li>
-          <li>{this.state.docs[4]}</li>
-        </ul>
-      </div>
-    );
+    if (this.state.docsLenta !== undefined) {
+      return (
+        <div>
+          <ul>
+            <li>{this.state.docs[0]}</li>
+            <li>{this.state.docs[1]}</li>
+            <li>{this.state.docs[3]}</li>
+            <li>{this.state.docs[4]}</li>
+          </ul>
+          <CasesBySocial rawData={this.state.docsLenta}/>
+        </div>
+      );
+    } else {
+      return(
+        <h1>Загрузка...</h1>
+      )
+    }
   }
 }
 

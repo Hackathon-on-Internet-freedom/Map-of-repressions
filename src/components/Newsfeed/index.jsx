@@ -4,7 +4,25 @@ import api from '../../api';
 
 import style from './newsfeed.scss';
 
-function loadDocs(callback, oldNews = []) {
+
+import { createEvent, createStore, createEffect } from 'effector';
+import { useStore } from 'effector-react'
+
+const fetchNewsFx = createEffect({
+    handler: async ({ oldNews }) => {
+        let news = await loadDocs(oldNews);
+        console.log(news);
+        return news;
+    }
+})
+
+
+const newsStore = createStore([])
+    .on(fetchNewsFx.doneData, (oldNews, newNews) => [...oldNews, ...newNews])
+
+fetchNewsFx({oldNews: []})
+
+function loadDocs(oldNews) {
 
     return api.gsheet.getData({
         ranges: 'LENTA!A' + (2 + oldNews.length) + ':J' + (11 + oldNews.length)
@@ -23,55 +41,26 @@ function loadDocs(callback, oldNews = []) {
                             source: element[5]
                         })
                     );
-                callback(data);
-            },
-            response => {
-                callback([false, response.result.error]);
-            },
+                return data
+            }
         );
 }
 
-class Newsfeed extends React.Component {
-
-
-
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-        this.state = { news: [] };
-    }
-
-    componentDidMount() {
-        this.loadMore([])
-    }
-
-    loadMore(oldNews) {
-        loadDocs(docs => {
-            console.log(docs);
-            this.handleChange([...oldNews, ...docs]);
-        }, oldNews);
-    }
-
-    handleChange(docs) {
-        this.setState({ news: docs });
-    }
-
-    render() {
-        const news = this.state.news;
-        return (
-            <div className={style.newsfeed}>
-                {news.map(item => {
-                    return (
-                        <Fragment key={item.href}>
-                            <NewsfeedItem data={item} />
-                            <hr />
-                        </Fragment>
-                    );
-                })}
-                <div className={style.moreButton} onClick={() => this.loadMore(news)}>Показать ещё</div>
-            </div>
-        );
-    }
+const Newsfeed = () => {
+    const news = useStore(newsStore);
+    return (
+        <div className={style.newsfeed}>
+            {news.map(item => {
+                return (
+                    <Fragment key={item.href}>
+                        <NewsfeedItem data={item} />
+                        <hr />
+                    </Fragment>
+                );
+            })}
+            <div className={style.moreButton} onClick={() => fetchNewsFx({oldNews: news})}>Показать ещё</div>
+        </div>
+    );
 }
 
 

@@ -1,5 +1,4 @@
 :global .react-datepicker__input-container input {
-
     display: inline-block;
     width: 100px;
     padding: 9.5px 10px;
@@ -18,4 +17,7 @@
 
 :global .react-datepicker-wrapper {
     padding: 10px;
+}
+
+.datePickerBlock {
 }

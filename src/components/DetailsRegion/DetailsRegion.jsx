@@ -2,6 +2,7 @@ import React from 'react';
 import { withRouter } from "react-router";
 import CasesBySocial from './CasesBySocialDetailed';
 import { getValuesFx, setNewsData } from '../../utils/effector';
+import styles from './DetailsRegion.module.scss';
 
 class DetailsRegion extends React.Component {
   constructor() {
@@ -77,15 +78,31 @@ class DetailsRegion extends React.Component {
   }
 
   render(){
-    console.log(this.state)
     if (this.state.docs !== undefined) {
       return (
         <div>
-          <li>{this.state.docs[0]}</li>
-          <li>{this.state.docs[1]}</li>
-          <li>{this.state.docs[3]}</li>
-          <li>{this.state.docs[4]}</li>
-          <CasesBySocial rawData={this.state.docs}/>
+          <div>
+            <div className={styles.dataBlock}>
+              <h2 className={styles.region_name}>{this.state.docs[0]}</h2>
+              <span>
+              <span className={styles.caption}>население</span><br/>
+              <span className={styles.number__green}>{this.state.docs[3]}</span>
+            </span>
+              <br/>
+              <span>
+              <span className={styles.caption}>правонарушений</span><br/>
+              <span className={styles.number__red}>{this.state.docs[1]}</span>
+            </span>
+              <br/>
+              <span>
+              <span className={styles.caption}>правонарушений на 100 000 человек</span><br/>
+              <span className={styles.number__yellow}>{this.state.docs[4]}</span>
+            </span><br/>
+            </div>
+          </div>
+          <div className={styles.caseBySocialBlock}>
+            <CasesBySocial rawData={this.state.docs}/>
+          </div>
         </div>
       );
     } else {

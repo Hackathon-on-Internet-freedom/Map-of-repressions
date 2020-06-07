@@ -1,9 +1,8 @@
-import React, { Fragment } from 'react';
-import ReactDatePicker, { registerLocale, setDefaultLocale } from 'react-datepicker';
+import React from 'react';
+import ReactDatePicker, { registerLocale } from 'react-datepicker';
 
 import ru from 'date-fns/locale/ru';
 import './react-datepicker.css';
-import './datepicker.scss';
 import styleButton from './styleButton.module.scss';
 
 

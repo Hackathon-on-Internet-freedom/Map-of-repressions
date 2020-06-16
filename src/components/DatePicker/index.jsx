@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 
 import ru from 'date-fns/locale/ru';
 import './react-datepicker.module.scss';
 import './datepicker.module.scss';
 import styleButton from './styleButton.module.scss';
-
 
 import { createEvent, createStore } from 'effector';
 import { useStore } from 'effector-react'
@@ -25,13 +24,18 @@ export const endDate = createStore(new Date())
     return payload;
   });
 
-
-
 // class DatePicker extends React.Component {
 const DatePicker = () => {
-
   const start = useStore(startDate);
   const end = useStore(endDate);
+
+  const onClick = useCallback(
+    () => {
+      startDateChange(new Date(2015, 0, 1));
+      endDateChange(new Date());
+    },
+    [],
+  );
 
   return (
     <div>
@@ -48,8 +52,9 @@ const DatePicker = () => {
         onChange={endDateChange}
         locale="ru"
       />
-      <div className={styleButton.reset} onClick={()=>{startDateChange(new Date(2015, 0, 1)); endDateChange(new Date());}}>Сбросить</div>
-
+      <div className={styleButton.reset} onClick={onClick}>
+        Сбросить
+      </div>
     </div>
   );
 }

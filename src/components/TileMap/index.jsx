@@ -32,19 +32,6 @@ function chooseTileColor(d) {
 }
 
 const TileMap = ({ mapWidth, mapHeight }) => {
-  useEffect(() => {
-    selectedTile.watch(state => {
-      document.querySelectorAll('[data-id]').forEach(el => {
-        el.classList.remove(styles['tile-map__selected']);
-      });
-
-      if (state) {
-        document.querySelector(`[data-id=${state}]`)
-          .classList.add(styles['tile-map__selected']);
-      }
-    });
-  }, []);
-
   const allData = useStore(rawData);
   const startDateValue = useStore(startDate);
   const endDateValue = useStore(endDate);
@@ -57,6 +44,23 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const settings = useStore(mapSettings);
   const colors = useStore(colorSchema);
   const currentSocial = useStore(selectedSocial);
+  const currentTile = useStore(selectedTile);
+
+  const { location } = window;
+
+  useEffect(
+    () => {
+      const parts = (location.pathname || '').split('/');
+      const id = parts.length && parts[1];
+
+      if (!id) {
+        return;
+      }
+
+      setSelectedTile(id);
+    },
+    [location],
+  );
 
   const socials = useMemo(
     () => ([
@@ -214,8 +218,9 @@ const TileMap = ({ mapWidth, mapHeight }) => {
           : '';
         history.push('/' + path);
       })
-      .classed(styles['tile-map__tile-wrapper'], true);
-  }, [view, data, calcMapHeight, calcX, calcY, mapHeight, mapWidth]);
+      .classed(styles['tile-map__tile-wrapper'], true)
+      .classed(styles['tile-map__selected'], d => d[MAP_ID_KEY] === currentTile);
+  }, [view, data, calcMapHeight, calcX, calcY, mapHeight, mapWidth, currentTile]);
 
   if (!data.length) {
     return 'Загрузка...';

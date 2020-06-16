@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import {
   Router,
   Switch,
-  Route
-} from "react-router-dom";
+  Route,
+} from 'react-router-dom';
 import { hot } from 'react-hot-loader';
 
 import style from './app.module.scss';
 import { getDataFx } from './utils/effector';
-import history from "./utils/history";
+import history from './utils/history';
 
 import TileMap from './components/TileMap';
 import CasesBySocial from './components/CasesBySocial';

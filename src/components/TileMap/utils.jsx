@@ -55,11 +55,16 @@ export function getMapData(data, settings, colors) {
 export const cookMetadata = (values, colors, valuesToRegionMap) => {
   const metadata = {};
   const valuesSet = new Set(values);
-  const gradient = gradstop({
-    stops: valuesSet.size,
-    inputFormat: 'hex',
-    colorArray: [colors.hot, colors.cold],
-  });
+  let gradient;
+  if (valuesSet.size < 2) {
+    gradient = [colors.cold];
+  } else {
+    gradient = gradstop({
+      stops: valuesSet.size,
+      inputFormat: 'hex',
+      colorArray: [colors.hot, colors.cold],
+    });
+  }
 
   const orderedValuesList = Array.from(valuesSet)
     .sort((a, b) => b - a);

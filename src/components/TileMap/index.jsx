@@ -74,13 +74,18 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     () => {
       if (currentSocial === 'Все площадки') {
         return dateRangedData;
-      } else if (currentSocial === socialKeys.fold.name) {
-        return socialKeys.fold.items.reduce((acc, key) => {
-          return acc.concat(socialDataMap[key]);
-        }, []);
       }
 
-      return socialDataMap[currentSocial].filter(element => {
+      let dataSet;
+      if (currentSocial === socialKeys.fold.name) {
+        dataSet = socialKeys.fold.items.reduce((acc, key) => {
+          return acc.concat(socialDataMap[key]);
+        }, []);
+      } else {
+        dataSet = socialDataMap[currentSocial];
+      }
+
+      return dataSet.filter(element => {
         const date = moment(element[0], 'D.MM.YYYY').toDate();
         return (date >= startDateValue && date <= endDateValue);
       });
@@ -91,7 +96,8 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const data = useMemo(
     () => {
       if (
-        !mapData || !mapData.length ||
+        !mapData ||
+        !allData || !allData.length ||
         !settings || !Object.keys(settings).length ||
         !colors || !Object.keys(colors).length
       ) {
@@ -100,7 +106,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
 
       return getMapData(mapData, settings, colors);
     },
-    [mapData, settings, colors],
+    [mapData, allData, settings, colors],
   );
 
   const numOfRegions = useMemo(

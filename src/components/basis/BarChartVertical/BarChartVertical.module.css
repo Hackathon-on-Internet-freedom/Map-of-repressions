@@ -1,0 +1,47 @@
+.container {
+  flex-basis: 100%;
+  width: inherit;
+  overflow: hidden;
+}
+
+.barHovered {
+  fill: #e1c129 !important;
+}
+.bar {
+  fill: steelblue;
+}
+.barHover {
+  fill: transparent;
+}
+
+.yAxis path {
+  display: none;
+}
+.yAxis line,
+.xAxis line {
+  stroke: #313434;
+  shape-rendering: crispEdges;
+}
+.yAxis text {
+  fill: white;
+  opacity: .4;
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  font-size: 26px;
+}
+
+.xAxis path {
+  display: none;
+}
+.xAxis text {
+  fill: white;
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  font-size: 26px;
+  transform: translateY(40px);
+}
+
+.listLabel {
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  fill: #e1c129;
+  font-size: 26px;
+  transform: translate(10px, -10px);
+}

@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
+import classnames from 'classnames';
 import DiagramCasesPerYear from '../DiagramCasesPerYear';
-import style from './DiagramCasesSwticher.module.scss';
+import styles from './DiagramCasesSwticher.module.css';
 import GraphCasesPerMonth from '../GraphCasesPerMonth';
+import TextHeader from 'components/basis/TextHeader';
 
 const DiagramCasesSwticher = () => {
-  const [isPerYear, setIsPerYear] = useState(true);
+  const [isPerYear, setIsPerYear] = useState(false); // TEST
 
   return (
-    <div className={style.container}>
-      <div className={style.header}>
-        <div className={style.headerText}>Динамика дел</div>
-
-        {
-          isPerYear
-          ? <button className={style.button} onClick={() => setIsPerYear(false)}>по месяцам</button>
-          : <button className={style.button} onClick={() => setIsPerYear(true)}>по годам</button>
-        }
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <TextHeader>Динамика дел</TextHeader>
+        <button
+          className={classnames(styles.button, {[styles.selected]: !isPerYear })}
+          onClick={() => setIsPerYear(false)}
+        >
+          по месяцам
+        </button>
+        
+        <button
+          className={classnames(styles.button, {[styles.selected]: isPerYear })}
+          onClick={() => setIsPerYear(true)}
+        >
+          по годам
+        </button>
       </div>
       {
         isPerYear

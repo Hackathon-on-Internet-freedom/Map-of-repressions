@@ -1,7 +1,8 @@
-.header {
+.text {
+  display: inline-block;
   font-family: 'Geometria', sans-serif;
   font-size: 44px;
   font-weight: bold;
   color: #fff0f0;
-  margin: 25px 5px;
+  margin: 30px;
 }

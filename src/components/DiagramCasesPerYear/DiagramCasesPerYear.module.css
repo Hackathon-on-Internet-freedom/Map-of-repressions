@@ -1,0 +1,11 @@
+.container {
+  flex-basis: 100%;
+  margin-top: 10px;
+}
+
+.bar {
+  fill: #51974a;
+}
+.barHovered {
+  fill: #84c27d !important;
+}

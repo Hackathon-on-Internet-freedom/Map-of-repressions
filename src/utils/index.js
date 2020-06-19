@@ -1,9 +1,11 @@
 import * as effector from './effector';
 import limitStringLength from './limitStringLength';
-import isArray from './isArray';
+import splitStringByLength from './splitStringByLength';
+import getUid from './getUid';
 
 export default {
   effector: { ...effector },
   limitStringLength,
-  isArray
+  splitStringByLength,
+  getUid
 }

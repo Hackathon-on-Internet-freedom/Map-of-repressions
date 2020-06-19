@@ -1,8 +1,8 @@
 import React from 'react';
-import VerticalBarChart from '../basis/VerticalBarChart';
+import BarChartVertical from '../basis/BarChartVertical';
 import { useStore } from 'effector-react';
 import { casesByYears } from '../../utils/effector';
-import style from './DiagramCasesPerYear.module.scss';
+import styles from './DiagramCasesPerYear.module.css';
 
 const DiagramCasesPerYear = () => {
   const rawYearData = useStore(casesByYears);
@@ -15,23 +15,14 @@ const DiagramCasesPerYear = () => {
   });
 
   return (
-    <div className={style.container}>
-      <VerticalBarChart
+    <div className={styles.container}>
+      <BarChartVertical
+        id="DiagramCasesPerYear"
         data={data}
-        height={600}
-        hideTooltip
-        // tooltipProps={{
-        //   cursor: false,
-        //   position: { y: 150, x: 500 },
-          // contentStyle: { background: 'transparent' },
-          // wrapperStyle: { width: '300px', height: '400px', border: 'none' }
-        // }}
-        yAxisProps={{
-          hide: true
-        }}
-        barProps={{
-          fill: '#51974a'
-        }}
+        height="85%"
+        hideStaticTooltip
+        barClassName={styles.bar}
+        barHoveredClassName={styles.barHovered}
       />
     </div>
   )

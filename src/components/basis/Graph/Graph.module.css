@@ -1,0 +1,15 @@
+.tooltipName {
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  font-size: 26px;
+  fill: #e1c129;
+}
+
+.tooltipValue {
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  font-size: 16px;
+  fill: #c7c7c7;
+}
+
+.bar {
+  fill: transparent !important;
+}

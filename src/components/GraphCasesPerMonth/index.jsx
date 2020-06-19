@@ -15,7 +15,7 @@ const GraphCasesPerMonth = () => {
 
   return (
     <div className={style.container}>
-      <Graph width={1400} height={600} data={data} />
+      <Graph id="GraphCasesPerMonth" data={data} />
     </div>
   )
 }

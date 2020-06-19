@@ -1,0 +1,12 @@
+.container {
+  flex-basis: 100%;
+  margin-top: 10px;
+}
+
+.bar {
+  fill: #af788d;
+}
+
+.listLabel {
+  display: none;
+}

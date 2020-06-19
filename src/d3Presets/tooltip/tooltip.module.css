@@ -1,0 +1,16 @@
+.tooltipName {
+  fill: white;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 33px;
+}
+.tooltipValue {
+  font-family: 'Rostelecom Basis Bold', sans-serif;
+  fill: #b76a73;
+  font-size: 35px;
+  font-weight: bold;
+}
+.tooltipValueLabel {
+  font-family: 'Rostelecom Basis Light', sans-serif;
+  fill: #c7c7c7;
+  font-size: 16px;
+}

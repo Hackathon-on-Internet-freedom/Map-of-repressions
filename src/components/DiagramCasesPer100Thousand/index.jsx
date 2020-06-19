@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import style from './DiagramCasesPer100Thousand.module.scss';
+import styles from './DiagramCasesPer100Thousand.module.css';
 import { getValuesFx } from '../../utils/effector';
-import VerticalBarChart from '../basis/VerticalBarChart';
+import BarChartVertical from '../basis/BarChartVertical';
+import TextHeader from 'components/basis/TextHeader';
 
-function DiagramCasesPer100Thousand() {
+const DiagramCasesPer100Thousand = () => {
   const [data, setData] = useState();
   useEffect(() => {
     getValuesFx({
@@ -18,32 +19,15 @@ function DiagramCasesPer100Thousand() {
   }
 
   return (
-    <div className={style.root}>
-      <VerticalBarChart
+    <div className={styles.container}>
+      <TextHeader>Кол-во дел на 100 тыс. населения</TextHeader>
+      <BarChartVertical
+        id="DiagramCasesPer100Thousand"
         height="85%"
-        hideLabelList
-        header="Кол-во дел на 100 тыс. населения"
         data={data}
-        tooltipProps={{
-          cursor: false,
-          position: { y: 150, x: 500 },
-          contentStyle: {
-            background: 'transparent',
-            color: 'white',
-            border: 'none',
-            fontSize: '33px'
-          },
-          wrapperStyle: { width: '300px', height: '400px' }
-        }}
-        barProps={{
-          fill: '#af788d',
-        }}
-        yAxisProps={{
-          hide: true
-        }}
-        xAxisProps={{
-          hide: true
-        }}
+        barClassName={styles.bar}
+        listLabelClassName={styles.listLabel}
+        staticTooltipValueLabel="дел"
       />
     </div>
   )

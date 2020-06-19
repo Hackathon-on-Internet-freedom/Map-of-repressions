@@ -59,33 +59,14 @@ Cайт https://map.suslovd.ru/
 ## Project Setup
 
 <pre>
-  <code>npm install</code>
-  <code>npm run start:dev</code>
+  <code>yarn install</code>
+  <code>yarn start</code>
 </pre>
 
 The site will be available on `localhost:3000`
 
-## ESLinter
-
-To check your code style just execute 
-
-<pre>
-  <code>npm run lint</code>
-</pre>
-
-Most issues can be fixed by calling came command with `--fix` key 
-
-<pre>
-  <code>npm run lint --fix</code>
-</pre>
-
-
-To avoid pre commit checks use `--no-verify` key, e.g.
-
-<pre><code>git commit -m "commit msg" --no-verify</code></pre>
-
 ## Testing
 
 <pre>
-  <code>npm test</code>
+  <code>yarn test</code>
 </pre>

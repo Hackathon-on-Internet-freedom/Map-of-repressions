@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { SPREADSHEET_ID, API_KEY } from '../constants';
-import utils from '../utils';
+import _ from 'lodash';
 
 const BASE_URL = 'https://sheets.googleapis.com/v4/spreadsheets/';
 
@@ -16,10 +16,10 @@ function gsheet(params) {
     delete params.customApimethod;
   } else {
 
-    if (utils.isArray(params.ranges) && params.ranges.length > 1) {
+    if (_.isArray(params.ranges) && params.ranges.length > 1) {
       url += '/values:batchGet';
     } else {
-      url += '/values/' + encodeURI(utils.isArray(params.ranges) ? params.ranges[0] : params.ranges);
+      url += '/values/' + encodeURI(_.isArray(params.ranges) ? params.ranges[0] : params.ranges);
       delete params.ranges;
     }
 
@@ -30,7 +30,7 @@ function gsheet(params) {
   const serializedParams = new URLSearchParams();
   Object.keys(params).forEach((key) => {
     const value = params[key];
-    if (utils.isArray(value)) {
+    if (_.isArray(value)) {
       value.forEach((value) => serializedParams.append(key, value));
     } else {
       serializedParams.append(key, value);

@@ -18,13 +18,14 @@ import {
   getMapData,
   ORDER,
   VIEW,
-  toggleOrder
 } from './utils';
 import history from '../../utils/history';
-import { startDate, endDate } from '../DatePicker'
+import DatePicker, { startDate, endDate } from '../DatePicker'
 
 import { useStore } from 'effector-react';
 import { MAP_ID_KEY } from '../../constants';
+
+import IconsSvg from './img/icons-sprite.svg';
 
 function chooseTileColor(d) {
   if (d.value === undefined) return '#777d7e'
@@ -47,6 +48,9 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const currentTile = useStore(selectedTile);
 
   const { location } = window;
+
+  const [showSocial, setShowSocial] = useState(false);
+  const [showRange, setShowRange] = useState(false);
 
   useEffect(
     () => {
@@ -125,7 +129,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const calcX = useCallback(
     (d, mC) => {
       if (view.type === VIEW.map) return d.col;
-      if (view.order === ORDER.desc) return (numOfRegions - 1 - d.rank) % mC;
+      if (view.order === ORDER.asc) return (numOfRegions - 1 - d.rank) % mC;
       return d.rank % mC;
     },
     [view, numOfRegions],
@@ -134,7 +138,7 @@ const TileMap = ({ mapWidth, mapHeight }) => {
   const calcY = useCallback(
     (d, mC) => {
       if (view.type === VIEW.map) return d.row;
-      if (view.order === ORDER.desc) return Math.floor((numOfRegions - 1 - d.rank) / mC);
+      if (view.order === ORDER.asc) return Math.floor((numOfRegions - 1 - d.rank) / mC);
       return Math.floor(d.rank / mC);
     },
     [view, numOfRegions],
@@ -232,40 +236,99 @@ const TileMap = ({ mapWidth, mapHeight }) => {
     return 'Загрузка...';
   }
 
+  const onChangeShowSocial = () => {
+    if (showSocial && currentSocial !== 'Все площадки') {
+      setSelectedSocial('Все площадки');
+    }
+    setShowSocial(!showSocial);
+  };
+
+  const onChangeShowRange = () => {
+    if (showRange) {
+      // reset range
+    }
+    setShowRange(!showRange);
+  };
+
   const onChangeSocial = (e) => {
     setSelectedSocial(e.target.value);
   };
-
-  const sortByFormatter = (o) => {
-    if (o === ORDER.desc) return 'убыванию';
-    return 'возрастанию';
-  }
 
   return (
     <div className={styles.root}>
       <div id="TileChart" />
 
       <div className={styles.controls}>
-        <button className={styles.mapButton} onClick={() => setView({type: VIEW.tileChart, order: toggleOrder(view.order)})}>
-          Сортировать по {sortByFormatter(view.order)}
-        </button>
-        {view.type === VIEW.tileChart && (
-          <button className={styles.mapButton} onClick={() => setView({type: VIEW.map, order: ORDER.desc})}>
-            Карта
+        {(view.type === VIEW.map || view.order === ORDER.desc) && (
+          <button
+            className={styles.control}
+            onClick={() => setView({ type: VIEW.tileChart, order: ORDER.asc })}
+          >
+            <img
+              src={`${IconsSvg}#asc`}
+              alt="Сортировать по возрастанию"
+              title="Сортировать по возрастанию"
+            />
           </button>
         )}
-        <select
-          name="social"
-          onChange={onChangeSocial}
-          value={currentSocial}>
-          {socials.map(social => (
-            <option
-              key={social}
-              value={social}>
-              {social}
-            </option>
-          ))}
-        </select>
+
+        {(view.type === VIEW.map || view.order === ORDER.asc) && (
+          <button
+            className={styles.control}
+            onClick={() => setView({ type: VIEW.tileChart, order: ORDER.desc })}
+          >
+            <img
+              src={`${IconsSvg}#desc`}
+              alt="Сортировать по убыванию"
+              title="Сортировать по убыванию"
+            />
+          </button>
+        )}
+
+        {view.type === VIEW.tileChart && (
+          <button
+            className={styles.control}
+            onClick={() => setView({ type: VIEW.map, order: ORDER.desc })}
+          >
+            <img
+              src={`${IconsSvg}#map`}
+              alt="Показать карту"
+              title="Показать карту"
+            />
+          </button>
+        )}
+
+        <button className={styles.control} onClick={onChangeShowSocial}>
+          <img
+            src={`${IconsSvg}#social`}
+            alt="Выбрать по площадке"
+            title="Выбрать по площадке"
+          />
+        </button>
+        {showSocial && (
+          <select
+            className={styles.socialSelect}
+            name="social"
+            onChange={onChangeSocial}
+            value={currentSocial}
+          >
+            {socials.map(social => (
+              <option
+                key={social}
+                value={social}
+              >
+                {social}
+              </option>
+            ))}
+          </select>
+        )}
+
+        {/*<button className={styles.control} onClick={onChangeShowRange}>*/}
+        {/*  <img src={`${IconsSvg}#calendar`} alt="Выбрать по датам" title="Выбрать по датам" />*/}
+        {/*</button>*/}
+        {/*{showRange && (*/}
+        {/*  <DatePicker />*/}
+        {/*)}*/}
       </div>
 
 

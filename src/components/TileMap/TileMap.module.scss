@@ -38,7 +38,29 @@
 .controls {
   display: flex;
   flex-direction: column;
-  padding-left: 40px;
+  min-width: 160px;
+  margin-left: 112px;
+}
+
+.control {
+  width: 100px;
+  height: 50px;
+  margin-bottom: 2px;
+  padding: 8px 18px;
+  border: none;
+  background: #2f3333;
+  cursor: pointer;
+
+  &:hover, &:focus {
+    opacity: 0.8;
+  }
+}
+
+.socialSelect {
+  margin: 2px 0 16px;
+  border: none;
+  background: #2F3333;
+  color: #FFFFFF;
 }
 
 .tooltip {

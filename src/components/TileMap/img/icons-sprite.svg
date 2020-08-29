@@ -1,0 +1,67 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <symbol id="_desc" viewBox="0 0 61 35" fill="#777D7E">
+            <rect x="0" y="0" width="19" height="35" />
+            <rect x="21" y="5" width="19" height="30" />
+            <rect x="42" y="12" width="19" height="23" />
+        </symbol>
+
+        <symbol id="_asc" viewBox="0 0 61 35" fill="#777D7E">
+            <rect x="0" y="12" width="19" height="23"/>
+            <rect x="21" y="5" width="19" height="30"/>
+            <rect x="42" y="0" width="19" height="35"/>
+        </symbol>
+
+        <symbol id="_map" viewBox="0 0 61 35" fill="#777D7E">
+            <polygon points="19,35 0,31 0,0 19,4"/>
+            <polygon points="40,0 21,4 21,35 40,31"/>
+            <polygon points="61,35 42,31 42,0 61,4"/>
+        </symbol>
+
+        <symbol id="_social" viewBox="19 7 61 35" fill="#777D7E">
+            <ellipse cx="35.625" cy="22" rx="8.5" ry="8"/>
+            <path d="M35.125,30c-8.837,0-16,5.82-16,13c11,0,21,0,32,0C51.125,35.82,43.962,30,35.125,30z"/>
+            <path d="M78.375,28h-23.5c-0.966,0-1.75-0.784-1.75-1.75V8.75c0-0.966,0.784-1.75,1.75-1.75h23.5 c0.966,0,1.75,0.784,1.75,1.75v17.5C80.125,27.216,79.341,28,78.375,28z"/>
+            <polygon points="56.125,28 56.125,32 58.125,28"/>
+
+            <g fill="#2F3333">
+                <rect x="62.125" y="10" width="3" height="15"/>
+                <rect x="68.125" y="10" width="3" height="15"/>
+                <rect x="65.125" y="13" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 87.125 -46.125)" width="3" height="15"/>
+                <rect x="65.125" y="7" transform="matrix(-1.836970e-16 1 -1 -1.836970e-16 81.125 -52.125)" width="3" height="15"/>
+            </g>
+        </symbol>
+
+        <symbol id="_calendar" viewBox="0 0 48 36" fill="#777D7E">
+            <rect x="0" y="0" width="48" height="36" rx="1.23" ry="1.23"/>
+
+            <g fill="#2F3333">
+                <rect x="15.43" y="6" width="6.86" height="6"/>
+                <rect x="25.71" y="6" width="6.86" height="6"/>
+                <rect x="36" y="6" width="6.86" height="6"/>
+                <rect x="25.71" y="15" width="6.86" height="6"/>
+                <rect x="36" y="15" width="6.86" height="6"/>
+                <rect x="5.14" y="15" width="6.86" height="6"/>
+                <rect x="15.43" y="15" width="6.86" height="6"/>
+                <rect x="15.43" y="24" width="6.86" height="6"/>
+                <rect x="25.71" y="24" width="6.86" height="6"/>
+                <rect x="5.14" y="24" width="6.86" height="6"/>
+            </g>
+        </symbol>
+    </defs>
+
+    <use xlink:href="#_desc" width="61" height="35" x="0" y="0" />
+    <view id="desc" viewBox="0 0 61 35" />
+
+    <use xlink:href="#_asc" width="61" height="35" x="0" y="40" />
+    <view id="asc" viewBox="0 40 61 35" />
+
+    <use xlink:href="#_map" width="61" height="35" x="0" y="80" />
+    <view id="map" viewBox="0 80 61 35" />
+
+    <use xlink:href="#_social" width="61" height="35" x="0" y="120" />
+    <view id="social" viewBox="0 120 61 35" />
+
+    <use xlink:href="#_calendar" width="61" height="35" x="0" y="160" />
+    <view id="calendar" viewBox="0 160 61 35" />
+</svg>
